@@ -1,0 +1,65 @@
+\contentsline {section}{\numberline {1}Guiding Philosophy and Analytical Scope}{5}{section.1}%
+\contentsline {subsection}{\numberline {1.1}López de Prado's Prescription for Validation}{5}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Objectives of This Report}{5}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Structure of the Document}{5}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Data, Sample Construction, and Experimental Protocol}{7}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Date Range, Asset Universe, and Data Cleaning}{7}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Backtesting Workflow and Rebalancing Mechanics}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Performance Metrics and Significance Tests}{8}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Overview of the HRP Algorithm and Embedded Assumptions}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Hierarchical Clustering and Distance Metrics}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Quasi-Diagonalisation and Block Risk Concentration}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Recursive Bisection and Inverse-Variance Allocation}{9}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Computational and Practical Considerations}{10}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Historical Tests: Framing the Evidence}{11}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Interpreting Historical Backtests within López de Prado's Guidance}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Structure of the Historical Evaluation}{11}{subsection.4.2}%
+\contentsline {section}{\numberline {5}In-Sample Performance Diagnostics}{12}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Comparative Statistics}{12}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Implications for the HRP Narrative}{12}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Distributional Concerns}{13}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Out-of-Sample Performance and Risk}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Primary Metrics}{14}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Visual Diagnostics}{14}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Interpretation through the López Lens}{15}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Statistical Significance and Robustness Checks}{16}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Bootstrap Confidence Intervals}{16}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Hypothesis Testing and Power}{16}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Robustness Considerations}{16}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Turnover, Implementation Costs, and Execution Risk}{17}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Turnover Diagnostics}{17}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Implications for Cost-Aware Investing}{17}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Execution Risk under Stress}{17}{subsection.8.3}%
+\contentsline {section}{\numberline {9}Assumption Audits and Theoretical Tensions}{18}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Correlation Stability}{18}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Variance Estimation Risk}{18}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Clustering Algorithm Sensitivity}{18}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Rebalancing Frequency and Transaction Costs}{18}{subsection.9.4}%
+\contentsline {section}{\numberline {10}The Missing Simulation Evidence}{19}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Why Simulation Matters}{19}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Potential Simulation Framework}{19}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Challenges and Caveats}{19}{subsection.10.3}%
+\contentsline {section}{\numberline {11}Historical Limits of Applicability}{21}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Regime-Specific Weaknesses}{21}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Concentration Risk}{21}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Tail Risk and Drawdown Dynamics}{21}{subsection.11.3}%
+\contentsline {section}{\numberline {12}Synthesis of Problems Identified}{22}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Empirical Shortcomings}{22}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Assumption Vulnerabilities}{22}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Validation Gaps}{22}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Consequences for the Paper's Claim}{22}{subsection.12.4}%
+\contentsline {section}{\numberline {13}Recommendations and Next Steps}{24}{section.13}%
+\contentsline {subsection}{\numberline {13.1}Immediate Actions}{24}{subsection.13.1}%
+\contentsline {subsection}{\numberline {13.2}Medium-Term Research Directions}{24}{subsection.13.2}%
+\contentsline {subsection}{\numberline {13.3}Long-Term Validation Roadmap}{24}{subsection.13.3}%
+\contentsline {section}{\numberline {14}Conclusion}{25}{section.14}%
+\contentsline {section}{\numberline {A}Raw Tables}{26}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}In-Sample Metrics}{26}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Out-of-Sample Summary}{26}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Statistical Tests}{26}{subsection.A.3}%
+\contentsline {subsection}{\numberline {A.4}Turnover Statistics}{27}{subsection.A.4}%
+\contentsline {section}{\numberline {B}Figures}{28}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}Dendrogram}{28}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}Statistical Test Visualisation}{28}{subsection.B.2}%
+\contentsline {subsection}{\numberline {B.3}Comprehensive Comparison}{28}{subsection.B.3}%
+\contentsline {section}{\numberline {C}Bibliography}{30}{appendix.C}%

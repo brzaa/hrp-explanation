@@ -1,0 +1,73 @@
+# Configuration file for HRP implementation
+# Allows easy parameter tuning without code changes
+
+# Data Parameters
+data:
+  csv_path: 'data/financials.csv'
+  start_date: '2020-01-01'
+  end_date: '2024-12-31'
+  min_data_pct: 0.8  # Minimum 80% data availability
+  max_missing_consecutive: 5  # Max consecutive days to forward fill
+
+# Walk-Forward Analysis
+walk_forward:
+  enabled: true
+  train_window: 252  # Trading days (1 year)
+  test_window: 63    # Trading days (3 months)
+  min_test_periods: 4  # Minimum number of test periods
+
+# Transaction Costs
+transaction_costs:
+  enabled: true
+  cost_bps: 10.0  # Basis points per trade
+  rebalance_freq: 21  # Days between rebalancing (monthly)
+  slippage_model: 'linear'  # 'linear' or 'fixed'
+
+# Statistical Testing
+statistical_tests:
+  enabled: true
+  bootstrap_samples: 1000
+  confidence_level: 0.95
+  methods:
+    - 'bootstrap_sharpe'
+    - 'paired_ttest'
+
+# HRP Algorithm Parameters
+hrp:
+  linkage_method: 'single'  # 'single', 'complete', 'average'
+  distance_metric: 'correlation'  # Based on paper
+  covariance_shrinkage: false  # Ledoit-Wolf shrinkage
+  annualization_factor: 252
+
+# Baseline Strategies
+baselines:
+  strategies:
+    - '1/N'
+    - 'inverse_vol'
+    - 'min_variance'
+    - 'risk_parity'
+  constraints:
+    long_only: true
+    max_weight: 0.2  # Optional: max 20% per asset
+
+# Output Settings
+output:
+  directory: 'outputs'
+  save_weights: true
+  save_metrics: true
+  save_returns: true
+  save_plots: true
+  plot_format: 'png'  # 'png', 'pdf', 'svg'
+  plot_dpi: 300
+
+# Logging
+logging:
+  level: 'INFO'  # 'DEBUG', 'INFO', 'WARNING', 'ERROR'
+  file: 'logs/hrp_execution.log'
+  console: true
+
+# Performance Profiling
+profiling:
+  enabled: false
+  memory: false
+  time: false

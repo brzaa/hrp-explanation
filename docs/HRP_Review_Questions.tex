@@ -1,0 +1,726 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\newtcolorbox{questionbox}[1]{
+  colback=#1!5!white,
+  colframe=#1!75!black,
+  title=Level
+}
+
+\title{\textbf{Hierarchical Risk Parity (HRP): \\
+Review Questions and Self-Assessment}}
+\author{Test Your Understanding}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{How to Use This Document}
+
+These questions are organized by topic and difficulty level:
+\begin{itemize}
+  \item \textbf{Level 1 (Foundational)}: Basic definitions and concepts
+  \item \textbf{Level 2 (Conceptual)}: Understanding and intuition
+  \item \textbf{Level 3 (Mathematical)}: Derivations and proofs
+  \item \textbf{Level 4 (Applied)}: Problem-solving and calculations
+  \item \textbf{Level 5 (Synthesis)}: Critical thinking and integration
+\end{itemize}
+
+Work through questions progressively. If you struggle with Level 1-2 questions, review the corresponding section. Aim to answer Level 3-4 questions without looking at notes, and use Level 5 for deeper exploration.
+
+\tableofcontents
+\newpage
+
+\section{Part I: Foundations - Portfolio Theory Basics}
+
+\subsection{Level 1: Foundational Questions}
+
+\begin{enumerate}
+  \item What is a portfolio weight vector $\mathbf{w}$? What constraints must it satisfy?
+
+  \item Define expected return and variance for a single asset. What do these quantities represent economically?
+
+  \item What is covariance? How does it differ from variance?
+
+  \item Define the correlation coefficient $\rho_{ij}$. What are its bounds?
+
+  \item What is diversification? Why does it work?
+\end{enumerate}
+
+\subsection{Level 2: Conceptual Understanding}
+
+\begin{enumerate}[resume]
+  \item Explain why portfolio return is simply a weighted average of individual returns, but portfolio variance is NOT a weighted average of individual variances.
+
+  \item Two assets have the same variance but different correlations with a third asset. Which one would you prefer to add to a portfolio containing the third asset? Why?
+
+  \item If you have two assets with correlation $\rho = 0.9$ and another pair with $\rho = 0.1$, which pair offers better diversification benefits? Explain intuitively.
+
+  \item Can diversification eliminate all risk? Why or why not? Distinguish between idiosyncratic and systematic risk.
+
+  \item Explain why "number of assets" alone is not a good measure of diversification. What matters more?
+\end{enumerate}
+
+\subsection{Level 3: Mathematical Derivations}
+
+\begin{enumerate}[resume]
+  \item Derive the formula for portfolio variance: $\sigma_p^2 = \mathbf{w}^T \boldsymbol{\Sigma} \mathbf{w}$
+
+  Start from: $\sigma_p^2 = \text{Var}\left(\sum_{i=1}^{N} w_i r_i\right)$
+
+  \item Prove that correlation $\rho_{ij} = \frac{\sigma_{ij}}{\sigma_i \sigma_j}$ is bounded by $[-1, 1]$.
+
+  \textit{Hint: Use the Cauchy-Schwarz inequality or consider the variance of $r_i \pm kr_j$ for appropriate $k$.}
+
+  \item Show that for two assets with equal variance $\sigma^2$ and correlation $\rho$, an equally-weighted portfolio has variance:
+  $$\sigma_p^2 = \frac{\sigma^2}{2}(1 + \rho)$$
+
+  What does this tell you about the benefit of diversification as a function of $\rho$?
+\end{enumerate}
+
+\subsection{Level 4: Applied Problems}
+
+\begin{enumerate}[resume]
+  \item Consider three assets with:
+  \begin{itemize}
+    \item $\sigma_1 = 20\%$, $\sigma_2 = 30\%$, $\sigma_3 = 25\%$
+    \item $\rho_{12} = 0.5$, $\rho_{13} = 0.3$, $\rho_{23} = 0.4$
+  \end{itemize}
+
+  Calculate the variance of an equally-weighted portfolio ($w_1 = w_2 = w_3 = 1/3$).
+
+  \item Suppose you have two assets with $\sigma_1 = 15\%$, $\sigma_2 = 25\%$, and $\rho_{12} = 0.6$. Find the portfolio weights that minimize variance. Compare the minimum variance to the individual asset variances.
+
+  \item An investor holds a portfolio of 10 stocks, all with volatility 30\% and pairwise correlation 0.7. What is the portfolio volatility if equally weighted? How does this compare to a single stock?
+\end{enumerate}
+
+\subsection{Level 5: Synthesis and Critical Thinking}
+
+\begin{enumerate}[resume]
+  \item During financial crises, correlations tend to increase (often approaching 1). Explain why this is problematic for diversification and foreshadows the problems with Markowitz optimization.
+
+  \item Some claim that in modern, globally connected markets, "diversification is dead" because everything moves together. Evaluate this claim using the mathematics of portfolio variance.
+
+  \item The formula $\sigma_p^2 = \mathbf{w}^T \boldsymbol{\Sigma} \mathbf{w}$ is quadratic in weights. What implications does this have for portfolio optimization? Why is optimization more complex than simply choosing low-variance assets?
+\end{enumerate}
+
+\newpage
+\section{Part II: Markowitz Optimization}
+
+\subsection{Level 1: Foundational Questions}
+
+\begin{enumerate}[resume]
+  \item State the Markowitz mean-variance optimization problem. What is being minimized? What are the constraints?
+
+  \item What is the efficient frontier? Why is it called "efficient"?
+
+  \item What is the minimum variance portfolio (MVP)? Where does it lie on the efficient frontier?
+
+  \item What is the Sharpe ratio? What does it measure?
+
+  \item Write the formula for the minimum variance portfolio weights. What mathematical operation is required?
+\end{enumerate}
+
+\subsection{Level 2: Conceptual Understanding}
+
+\begin{enumerate}[resume]
+  \item Markowitz optimization is "theoretically optimal." Why does it fail in practice? List the three main failures.
+
+  \item Explain the difference between in-sample and out-of-sample performance. Why does Markowitz perform well in-sample but poorly out-of-sample?
+
+  \item What does it mean for a portfolio to be "concentrated"? Why does Markowitz optimization tend to produce concentrated portfolios?
+
+  \item Markowitz portfolios often have extreme long and short positions (e.g., 200\% in asset A, -150\% in asset B). Explain why the optimizer produces such positions.
+
+  \item Why does adding a "no short-selling" constraint ($\mathbf{w} \geq 0$) only partially solve the problems with Markowitz optimization?
+\end{enumerate}
+
+\subsection{Level 3: Mathematical Derivations}
+
+\begin{enumerate}[resume]
+  \item Derive the minimum variance portfolio weights:
+  $$\mathbf{w}_{\text{MVP}} = \frac{\boldsymbol{\Sigma}^{-1} \mathbf{1}}{\mathbf{1}^T \boldsymbol{\Sigma}^{-1} \mathbf{1}}$$
+
+  Use the method of Lagrange multipliers with the constraint $\mathbf{w}^T \mathbf{1} = 1$.
+
+  \item For two assets, show that the Markowitz minimum variance portfolio has weights:
+  $$w_1 = \frac{\sigma_2^2 - \sigma_{12}}{\sigma_1^2 + \sigma_2^2 - 2\sigma_{12}}, \quad w_2 = 1 - w_1$$
+
+  What happens when $\sigma_{12} \to \sigma_1 \sigma_2$ (correlation approaches 1)?
+
+  \item Prove that any portfolio on the efficient frontier can be written as a linear combination of two frontier portfolios (the two-fund theorem).
+\end{enumerate}
+
+\subsection{Level 4: Applied Problems}
+
+\begin{enumerate}[resume]
+  \item Consider two assets:
+  \begin{itemize}
+    \item Asset 1: $\mu_1 = 8\%$, $\sigma_1 = 15\%$
+    \item Asset 2: $\mu_2 = 12\%$, $\sigma_2 = 25\%$
+    \item Correlation: $\rho_{12} = 0.3$
+  \end{itemize}
+
+  \begin{enumerate}
+    \item Find the minimum variance portfolio weights
+    \item Calculate the portfolio's expected return and standard deviation
+    \item Compare to an equally-weighted portfolio
+  \end{enumerate}
+
+  \item An investor uses Markowitz optimization with 5 assets. The optimization suggests weights: [0.45, -0.20, 0.55, 0.15, 0.05]. What concerns would you have about implementing this portfolio?
+
+  \item Suppose you estimate a correlation matrix and find that one eigenvalue is very close to zero (e.g., $\lambda_{\min} = 0.001$). What does this imply about using this matrix for Markowitz optimization?
+\end{enumerate}
+
+\subsection{Level 5: Synthesis and Critical Thinking}
+
+\begin{enumerate}[resume]
+  \item The efficient frontier is defined using expected returns $\boldsymbol{\mu}$, which are notoriously difficult to estimate. How does estimation error in $\boldsymbol{\mu}$ versus $\boldsymbol{\Sigma}$ affect portfolio construction differently?
+
+  \item Some practitioners use "robust optimization" methods that optimize for worst-case scenarios. How does this differ philosophically from Markowitz's approach? What trade-offs are involved?
+
+  \item If Markowitz optimization is "optimal," how can simpler methods (like equal weighting) sometimes outperform it? What does this paradox reveal about the nature of optimization in the presence of uncertainty?
+\end{enumerate}
+
+\newpage
+\section{Part III: The Problems with Classical Optimization}
+
+\subsection{Level 1: Foundational Questions}
+
+\begin{enumerate}[resume]
+  \item What is an eigenvalue? What is an eigenvector? Define these in the context of a covariance matrix.
+
+  \item Define the condition number of a matrix. What does it measure?
+
+  \item What is meant by an "ill-conditioned" matrix?
+
+  \item State Markowitz's Curse. Why is it called a "curse"?
+
+  \item What is the difference between noise-induced and signal-induced instability?
+\end{enumerate}
+
+\subsection{Level 2: Conceptual Understanding}
+
+\begin{enumerate}[resume]
+  \item Explain in intuitive terms why matrix inversion becomes unstable when eigenvalues are very different in magnitude.
+
+  \item Why does high correlation between assets lead to numerical instability in optimization? Use the concept of redundant information.
+
+  \item Financial data has a low signal-to-noise ratio. What does this mean concretely? Give an example.
+
+  \item Explain the tension between data requirements and stationarity: Why can't we just use more historical data to get better covariance estimates?
+
+  \item A practitioner says "I'll use Markowitz but with more sophisticated covariance estimation (e.g., shrinkage estimators)." Will this fully solve the instability problem? Why or why not?
+\end{enumerate}
+
+\subsection{Level 3: Mathematical Derivations}
+
+\begin{enumerate}[resume]
+  \item Show that for a $2 \times 2$ covariance matrix with equal variances $\sigma^2$ and correlation $\rho$:
+  $$\boldsymbol{\Sigma} = \sigma^2 \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}$$
+
+  The condition number is: $\kappa(\boldsymbol{\Sigma}) = \frac{1 + \rho}{1 - \rho}$
+
+  What happens as $\rho \to 1$?
+
+  \item Prove that adding a small constant to the diagonal of a matrix (Tikhonov regularization) reduces the condition number:
+  $$\tilde{\boldsymbol{\Sigma}} = \boldsymbol{\Sigma} + \epsilon \mathbf{I}$$
+
+  Show that $\kappa(\tilde{\boldsymbol{\Sigma}}) < \kappa(\boldsymbol{\Sigma})$ for $\epsilon > 0$.
+
+  \item For a covariance matrix with eigenvalues $\lambda_1, \ldots, \lambda_N$, show that the inverse has eigenvalues $1/\lambda_1, \ldots, 1/\lambda_N$. Explain why small eigenvalues cause problems.
+\end{enumerate}
+
+\subsection{Level 4: Applied Problems}
+
+\begin{enumerate}[resume]
+  \item A covariance matrix has eigenvalues: [0.045, 0.032, 0.018, 0.012, 0.003]. Calculate the condition number. Is this matrix well-conditioned?
+
+  \item You have 50 assets and 260 daily observations (1 year of data). Is this sufficient for reliable covariance estimation? Use the rule of thumb $T \geq 10N$.
+
+  \item Two correlation matrices give nearly identical Markowitz minimum variance portfolios in one simulation, but wildly different portfolios in another. The matrices are:
+
+  Matrix A: $\rho_{12} = 0.850$
+
+  Matrix B: $\rho_{12} = 0.851$
+
+  Explain why such a small difference (0.1\%) causes instability. How does this relate to condition number?
+
+  \item You observe that a Markowitz portfolio has 80\% weight in a single asset. You slightly change the data window (drop 5 days, add 5 new days) and now the weight is only 10\%. What does this tell you about the condition number of your covariance matrix?
+\end{enumerate}
+
+\subsection{Level 5: Synthesis and Critical Thinking}
+
+\begin{enumerate}[resume]
+  \item Modern portfolio theory assumes returns are stationary (statistical properties don't change over time). Given that markets evolve, how does this fundamental assumption interact with the data requirements for covariance estimation?
+
+  \item Some researchers use "realized covariance" from high-frequency data (e.g., 5-minute returns). Does this solve the signal-to-noise problem? What new problems might it introduce?
+
+  \item The condition number depends on correlation structure, which itself must be estimated. This creates a circularity: we need good estimates to know if our estimates are reliable. How might we break this circle?
+
+  \item Compare the problem of ill-conditioned covariance matrices to the problem of multicollinearity in regression. What are the similarities and differences?
+\end{enumerate}
+
+\newpage
+\section{Part IV: Mathematical Prerequisites for HRP}
+
+\subsection{Level 1: Foundational Questions}
+
+\begin{enumerate}[resume]
+  \item What is a metric space? What four properties must a distance function satisfy?
+
+  \item Write the formula for correlation-based distance. Why can't we use correlation directly as a distance?
+
+  \item What is a graph? What is a complete graph? What is a tree?
+
+  \item Define hierarchical clustering. What is a dendrogram?
+
+  \item What is a linkage method? Name three types.
+\end{enumerate}
+
+\subsection{Level 2: Conceptual Understanding}
+
+\begin{enumerate}[resume]
+  \item Explain the key difference between working with geometry (Markowitz) versus topology (HRP). Use the subway map analogy.
+
+  \item Why does converting correlation to distance require the specific formula $d_{ij} = \sqrt{\frac{1}{2}(1 - \rho_{ij})}$? Why not just $d_{ij} = 1 - \rho_{ij}$?
+
+  \item A complete graph on $N$ nodes has $\binom{N}{2}$ edges. A tree on $N$ nodes has $N-1$ edges. For $N=50$, compute both. What does this dramatic reduction tell you about complexity?
+
+  \item Explain why hierarchical clustering is more robust to outliers in correlation estimates than using the full correlation matrix.
+
+  \item In single linkage clustering, we merge clusters based on their nearest members. Why might this lead to "chaining" (long, stringy clusters)? Would complete linkage be better?
+\end{enumerate}
+
+\subsection{Level 3: Mathematical Derivations}
+
+\begin{enumerate}[resume]
+  \item Prove that $d_{ij} = \sqrt{\frac{1}{2}(1 - \rho_{ij})}$ satisfies the triangle inequality (the hardest metric axiom to verify).
+
+  \textit{Hint: Use the fact that the correlation matrix is positive semi-definite.}
+
+  \item Show that the triangle inequality would be violated if we used $d_{ij} = 1 - \rho_{ij}$ directly. Provide a counterexample.
+
+  \item For a tree with $N$ nodes, prove that there are exactly $N-1$ edges. Use induction.
+
+  \item Prove that in a tree, there is exactly one path between any two nodes.
+\end{enumerate}
+
+\subsection{Level 4: Applied Problems}
+
+\begin{enumerate}[resume]
+  \item Given correlation matrix:
+  $$\mathbf{C} = \begin{pmatrix}
+  1.0 & 0.9 & 0.2 & 0.3 \\
+  0.9 & 1.0 & 0.25 & 0.35 \\
+  0.2 & 0.25 & 1.0 & 0.8 \\
+  0.3 & 0.35 & 0.8 & 1.0
+  \end{pmatrix}$$
+
+  \begin{enumerate}
+    \item Compute the distance matrix using $d_{ij} = \sqrt{\frac{1}{2}(1 - \rho_{ij})}$
+    \item Perform hierarchical clustering (single linkage) by hand
+    \item Draw the resulting dendrogram
+  \end{enumerate}
+
+  \item You have 5 assets with distances: $d_{12}=0.3$, $d_{13}=0.7$, $d_{14}=0.8$, $d_{15}=0.6$, $d_{23}=0.65$, $d_{24}=0.75$, $d_{25}=0.55$, $d_{34}=0.4$, $d_{35}=0.5$, $d_{45}=0.35$.
+
+  Apply single linkage clustering step by step until you have a complete dendrogram.
+
+  \item Compare single linkage and complete linkage for a simple case. Which is more conservative? Which produces tighter clusters?
+\end{enumerate}
+
+\subsection{Level 5: Synthesis and Critical Thinking}
+
+\begin{enumerate}[resume]
+  \item HRP uses correlation-based distance, which depends only on correlation, not on variances. Could we incorporate variance information into the distance metric? What would be the trade-offs?
+
+  \item Hierarchical clustering imposes a tree structure on data that might not be truly hierarchical. When might this be a poor assumption? Can you think of asset relationships that don't fit a tree?
+
+  \item The choice of linkage method affects the tree structure, which affects the final portfolio. How sensitive is HRP to this choice? Is this a bug or a feature?
+
+  \item Graph theory offers many structures beyond trees: minimum spanning trees, community detection algorithms, etc. Could these be used for portfolio construction? What would be the advantages and challenges?
+\end{enumerate}
+
+\newpage
+\section{Part V: The HRP Algorithm}
+
+\subsection{Level 1: Foundational Questions}
+
+\begin{enumerate}[resume]
+  \item List the three steps of the HRP algorithm.
+
+  \item What is quasi-diagonalization? What does it accomplish?
+
+  \item What is recursive bisection? Why is it called "recursive"?
+
+  \item How do you calculate cluster variance in Step 3?
+
+  \item In recursive bisection, which sub-cluster gets more weight: the one with higher or lower variance?
+\end{enumerate}
+
+\subsection{Level 2: Conceptual Understanding}
+
+\begin{enumerate}[resume]
+  \item Explain why HRP doesn't require matrix inversion. Where does this fundamentally differ from Markowitz?
+
+  \item In quasi-diagonalization, we reorder rows and columns of the covariance matrix. Does this change the matrix's eigenvalues? Its determinant? Explain.
+
+  \item Why is the reordered matrix called "quasi-diagonal" rather than "diagonal"? What pattern do we expect to see?
+
+  \item Explain the risk parity principle embedded in recursive bisection: "allocate inversely to risk."
+
+  \item HRP makes $N-1$ binary decisions (one at each internal node of the tree). Compare this to Markowitz, which solves a single global optimization. What are the implications for stability?
+
+  \item Why does HRP typically give positive weight to all assets, while Markowitz often gives zero weights to many assets?
+\end{enumerate}
+
+\subsection{Level 3: Mathematical Derivations}
+
+\begin{enumerate}[resume]
+  \item For a cluster $C$ containing assets with variances $\sigma_1^2, \sigma_2^2, \ldots, \sigma_k^2$, derive the inverse-variance weights:
+  $$w_i^{\text{IV}} = \frac{1/\sigma_i^2}{\sum_{j \in C} 1/\sigma_j^2}$$
+
+  Show that these weights minimize the portfolio variance if correlations are ignored (i.e., if $\rho_{ij} = 0$ for all $i \neq j$).
+
+  \item Prove that in recursive bisection, the weight allocation formula:
+  $$W_L = W_P \cdot \frac{V_R}{V_L + V_R}$$
+
+  ensures that $W_L + W_R = W_P$ (weights sum to parent weight).
+
+  \item Show that for two clusters with variances $V_L$ and $V_R$ receiving weights $W_L$ and $W_R$ as above, the risk contributions are equal:
+  $$W_L^2 V_L = W_R^2 V_R$$
+
+  This is the risk parity condition at each bifurcation.
+\end{enumerate}
+
+\subsection{Level 4: Applied Problems}
+
+\begin{enumerate}[resume]
+  \item Complete the HRP algorithm for the following 4-asset example:
+
+  Dendrogram structure: $\{(\{A, B\}, \{C, D\})\}$
+
+  Volatilities: $\sigma_A = 18\%$, $\sigma_B = 22\%$, $\sigma_C = 12\%$, $\sigma_D = 15\%$
+
+  Covariances:
+  \begin{itemize}
+    \item Within cluster $\{A,B\}$: $\sigma_{AB} = 0.7 \cdot 18\% \cdot 22\%$
+    \item Within cluster $\{C,D\}$: $\sigma_{CD} = 0.6 \cdot 12\% \cdot 15\%$
+  \end{itemize}
+
+  Compute the final HRP weights step-by-step.
+
+  \item Given the dendrogram structure: $\{\{A, B\}, \{\{C, D\}, E\}\}$
+
+  (i.e., assets A and B cluster first, C and D cluster next, then $\{C,D\}$ clusters with E, and finally $\{A,B\}$ clusters with $\{C,D,E\}$)
+
+  If all assets have equal variance and all pairwise correlations are 0.5, what are the HRP weights?
+
+  \item Implement the quasi-diagonalization step: Given a dendrogram and a $4 \times 4$ covariance matrix, reorder the matrix according to the tree structure.
+\end{enumerate}
+
+\subsection{Level 5: Synthesis and Critical Thinking}
+
+\begin{enumerate}[resume]
+  \item HRP uses inverse-variance weighting within clusters but risk-parity weighting between clusters. Why this hybrid approach? Could we use risk parity everywhere?
+
+  \item The dendrogram from Step 1 could be "cut" at different heights to produce different numbers of clusters. HRP implicitly uses all levels of the hierarchy. Could we benefit from explicit multi-level analysis?
+
+  \item Quasi-diagonalization doesn't change any numerical values, only the ordering. Yet this step is crucial for the algorithm. Why? What would happen if we skipped it?
+
+  \item Compare the computational graph of HRP (a tree with local computations) to Markowitz (a global optimization). How does this relate to concepts in machine learning like local vs. global minima?
+\end{enumerate}
+
+\newpage
+\section{Part VI: Performance Analysis and Comparisons}
+
+\subsection{Level 1: Foundational Questions}
+
+\begin{enumerate}[resume]
+  \item What three methods are compared in the paper: CLA, IVP, and HRP? Briefly describe each.
+
+  \item In the Monte Carlo simulations, which method performed best out-of-sample? Which performed worst?
+
+  \item What is meant by "out-of-sample" performance? Why is it more important than in-sample performance?
+
+  \item How much variance reduction did HRP achieve compared to Markowitz (CLA)?
+
+  \item What is the time complexity of HRP? How does it compare to Markowitz?
+\end{enumerate}
+
+\subsection{Level 2: Conceptual Understanding}
+
+\begin{enumerate}[resume]
+  \item Explain the paradox: Markowitz is "optimal" in-sample but performs worst out-of-sample. What does this teach us about optimization?
+
+  \item IVP (inverse variance portfolio) ignores correlations entirely. Why does it outperform Markowitz despite using less information?
+
+  \item HRP strikes a balance between CLA (too aggressive) and IVP (too naive). Explain what this means in terms of bias-variance tradeoff.
+
+  \item The paper shows HRP is more data-efficient than Markowitz. Explain why this is important for practical implementation.
+
+  \item Why does portfolio concentration (putting most weight in one or two assets) increase out-of-sample variance?
+\end{enumerate}
+
+\subsection{Level 3: Mathematical Analysis}
+
+\begin{enumerate}[resume]
+  \item Given out-of-sample variances:
+  \begin{itemize}
+    \item $\sigma_{\text{CLA}}^2 = 0.1157$
+    \item $\sigma_{\text{HRP}}^2 = 0.0671$
+  \end{itemize}
+
+  Assuming equal expected returns, calculate the Sharpe ratio improvement of HRP over CLA.
+
+  \item If a portfolio has variance $\sigma^2 = 0.09$ and we can reduce it to $0.06$ through better methodology, what is the percentage reduction in standard deviation? Why is this more meaningful than percentage reduction in variance?
+
+  \item The paper uses $N=50$ assets and $T=260$ observations. Calculate the ratio $T/N$. Is this sufficient for reliable covariance estimation according to the rule $T \geq 10N$?
+
+  \item HRP has complexity $O(N^2 \log N)$ while Markowitz has $O(N^3)$. For $N=1000$, approximately how much faster is HRP?
+\end{enumerate}
+
+\subsection{Level 4: Applied Problems}
+
+\begin{enumerate}[resume]
+  \item You manage a portfolio and are deciding between three approaches:
+  \begin{itemize}
+    \item Equal weighting (1/N)
+    \item Markowitz optimization
+    \item HRP
+  \end{itemize}
+
+  You have 100 assets and 3 years of daily data (750 observations). Which method would you choose? Justify based on data requirements and stability.
+
+  \item Implement a simple comparison: For 5 assets with a given covariance matrix, compute:
+  \begin{enumerate}
+    \item Minimum variance (Markowitz) weights
+    \item Inverse variance weights
+    \item HRP weights
+  \end{enumerate}
+  Compare the resulting portfolio variances.
+
+  \item A portfolio manager shows you backtest results: Markowitz outperforms HRP by 2\% per year in-sample. How would you interpret this result? What additional analysis would you request?
+\end{enumerate}
+
+\subsection{Level 5: Synthesis and Critical Thinking}
+
+\begin{enumerate}[resume]
+  \item The paper tests performance using Monte Carlo simulation, not just historical backtests. Why is this methodologically stronger? What can simulations tell us that backtests cannot?
+
+  \item Transaction costs favor less concentrated portfolios (since you're not trading extreme positions). How would including transaction costs affect the relative performance of CLA, IVP, and HRP?
+
+  \item Could we create an ensemble that combines HRP, Markowitz, and equal weighting? How would you determine the optimal combination? Would this be better than any single method?
+
+  \item The performance comparison assumes we're only trying to minimize variance (risk). How might results change if we also considered expected returns? Which method would be easier to extend to include return forecasts?
+\end{enumerate}
+
+\newpage
+\section{Part VII: The Bigger Picture}
+
+\subsection{Level 1: Foundational Questions}
+
+\begin{enumerate}[resume]
+  \item According to López de Prado, what is the "least interesting" application of ML in finance? Why?
+
+  \item Name three valuable applications of ML in finance (beyond price prediction).
+
+  \item What is an ensemble method? Give an example.
+
+  \item What is meant by "the representation problem"?
+
+  \item List three possible extensions of HRP mentioned in the document.
+\end{enumerate}
+
+\subsection{Level 2: Conceptual Understanding}
+
+\begin{enumerate}[resume]
+  \item Explain why price prediction is particularly difficult in financial markets. What makes financial data different from, say, image recognition?
+
+  \item HRP succeeds not by better optimization, but by better representation (tree vs. complete graph). Give another example from machine learning where representation choice matters more than optimization algorithm.
+
+  \item What is "structural break detection" and why is it important for portfolio management?
+
+  \item Explain the concept of "bet sizing" in the context of portfolio management. How does this differ from traditional position sizing?
+
+  \item What does it mean to "diversify the methods" rather than just diversifying assets?
+\end{enumerate}
+
+\subsection{Level 3: Synthesis and Critical Thinking}
+
+\begin{enumerate}[resume]
+  \item The document argues that HRP's success comes from matching the mathematical representation to the structure of financial data (hierarchical clusters). Can you think of other domains where hierarchical structure exists but standard methods use flat representations?
+
+  \item Machine learning is often criticized for being a "black box." Is HRP more or less interpretable than Markowitz optimization? Defend your position.
+
+  \item Many quantitative strategies fail when they become widely adopted (the "capacity problem"). Do you think HRP would suffer from this? Why or why not?
+
+  \item The paper was published in 2016. Research recent developments: Has HRP been adopted in practice? What limitations have emerged? What improvements have been proposed?
+\end{enumerate}
+
+\subsection{Level 4: Integration Across Topics}
+
+\begin{enumerate}[resume]
+  \item Trace the full intellectual journey from Markowitz (1952) to HRP (2016):
+  \begin{itemize}
+    \item What problem did Markowitz solve?
+    \item What problems did his solution create?
+    \item How did decades of research try to fix these problems?
+    \item What was López de Prado's key insight?
+  \end{itemize}
+
+  \item Create a comparison table with axes:
+  \begin{itemize}
+    \item Rows: Equal Weight, IVP, Markowitz, HRP
+    \item Columns: Complexity, Data Requirements, Stability, Diversification, Performance
+  \end{itemize}
+
+  Fill in each cell and discuss trade-offs.
+
+  \item Design a research project: "HRP for Cryptocurrencies"
+  \begin{itemize}
+    \item What challenges would you face?
+    \item What modifications to HRP might be needed?
+    \item How would you evaluate success?
+  \end{itemize}
+
+  \item Philosophical question: HRP shows that simpler, more robust methods can outperform complex "optimal" methods. What does this teach us about the nature of optimization under uncertainty? Can you draw parallels to other fields (medicine, engineering, policy-making)?
+\end{enumerate}
+
+\newpage
+\section{Comprehensive Challenge Problems}
+
+These problems require integrating knowledge from multiple sections:
+
+\begin{enumerate}[resume]
+  \item \textbf{The Complete Pipeline}: You are given monthly returns for 20 stocks over 10 years.
+  \begin{enumerate}
+    \item Estimate the correlation matrix
+    \item Compute the condition number - is it well-conditioned?
+    \item Convert to distance matrix
+    \item Perform hierarchical clustering
+    \item Implement quasi-diagonalization
+    \item Execute recursive bisection
+    \item Calculate the final HRP portfolio
+    \item Compare to equal-weighted and minimum-variance portfolios
+    \item Backtest all three out-of-sample
+  \end{enumerate}
+
+  \item \textbf{Sensitivity Analysis}:
+  \begin{enumerate}
+    \item Take your correlation matrix and perturb each entry by adding random noise $\epsilon \sim N(0, 0.01)$
+    \item Recompute Markowitz and HRP portfolios
+    \item Measure how much the weights changed (e.g., using $\|\mathbf{w}_{\text{new}} - \mathbf{w}_{\text{old}}\|$)
+    \item Repeat 100 times
+    \item Compare the stability of Markowitz vs. HRP
+  \end{enumerate}
+
+  \item \textbf{Theoretical Analysis}:
+  Prove that the HRP portfolio can be written as:
+  $$\mathbf{w}_{\text{HRP}} = f(\mathcal{T}, \boldsymbol{\Sigma})$$
+  where $\mathcal{T}$ is the tree structure and $f$ is a function that doesn't require matrix inversion. What are the properties of $f$? Is it continuous? Differentiable?
+
+  \item \textbf{Extension: Dynamic HRP}:
+  Design a dynamic version of HRP where:
+  \begin{itemize}
+    \item The tree structure can change over time
+    \item You detect when the hierarchical structure has shifted significantly
+    \item You decide when to rebalance based on both weights and tree structure
+  \end{itemize}
+  How would you implement this? What metrics would you use?
+
+  \item \textbf{Critique and Improve}:
+  Write a critical review of HRP identifying:
+  \begin{enumerate}
+    \item Three key assumptions that might not hold in practice
+    \item Scenarios where HRP would likely fail
+    \item Three concrete improvements you would propose
+    \item How you would test whether your improvements work
+  \end{enumerate}
+
+  \item \textbf{Real-World Implementation}:
+  You're implementing HRP for a $\$100$M portfolio. Address:
+  \begin{enumerate}
+    \item How often would you recompute the tree?
+    \item How would you handle transaction costs?
+    \item What do you do when the tree structure changes drastically?
+    \item How would you explain this to clients unfamiliar with graph theory?
+    \item What risk management overlays would you add?
+  \end{enumerate}
+\end{enumerate}
+
+\newpage
+\section{Self-Assessment Rubric}
+
+Rate your understanding for each section (1-5 scale):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Topic} & \textbf{Level 1} & \textbf{Level 2} & \textbf{Level 3} & \textbf{Level 4} & \textbf{Level 5} \\
+\hline
+Part I: Foundations & \quad & \quad & \quad & \quad & \quad \\
+\hline
+Part II: Markowitz & \quad & \quad & \quad & \quad & \quad \\
+\hline
+Part III: Problems & \quad & \quad & \quad & \quad & \quad \\
+\hline
+Part IV: Prerequisites & \quad & \quad & \quad & \quad & \quad \\
+\hline
+Part V: HRP Algorithm & \quad & \quad & \quad & \quad & \quad \\
+\hline
+Part VI: Performance & \quad & \quad & \quad & \quad & \quad \\
+\hline
+Part VII: Big Picture & \quad & \quad & \quad & \quad & \quad \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{Scoring Guide}
+
+For each section and level:
+\begin{itemize}
+  \item \textbf{1}: Cannot answer questions; need to review material
+  \item \textbf{2}: Can answer with notes; basic understanding
+  \item \textbf{3}: Can answer most without notes; solid understanding
+  \item \textbf{4}: Can answer all confidently; strong understanding
+  \item \textbf{5}: Can answer and extend; mastery level
+\end{itemize}
+
+\subsection*{Target Benchmarks}
+
+\begin{itemize}
+  \item \textbf{Minimum competency}: All Level 1 questions at score 4+, Level 2 at score 3+
+  \item \textbf{Strong understanding}: All Level 1-2 at score 5, Level 3-4 at score 4+
+  \item \textbf{Mastery}: All levels at score 4+, Level 5 at score 3+
+\end{itemize}
+
+\subsection*{Study Recommendations Based on Gaps}
+
+\begin{itemize}
+  \item \textbf{If struggling with Level 1-2}: Review the corresponding section in the main document. Focus on definitions and intuition before mathematics.
+
+  \item \textbf{If struggling with Level 3}: Work through the derivations in the document step-by-step. Fill in missing steps. Derive related results.
+
+  \item \textbf{If struggling with Level 4}: Practice more problems. Implement algorithms in code. Test with simulated data.
+
+  \item \textbf{If struggling with Level 5}: Read the original paper by López de Prado. Read related research. Try to extend the ideas to new domains.
+\end{itemize}
+
+\section*{Conclusion}
+
+These questions are designed to test deep understanding, not just memorization. If you can work through Level 3-5 questions for most sections, you have a strong grasp of HRP and its foundations.
+
+Remember: Understanding comes from doing. Attempt to answer questions without immediately looking at the document. Struggle is part of learning.
+
+Good luck with your review!
+
+\end{document}

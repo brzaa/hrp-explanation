@@ -1,0 +1,1389 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\newtcolorbox{definition}{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  title=Definition
+}
+
+\newtcolorbox{theorem}{
+  colback=red!5!white,
+  colframe=red!75!black,
+  title=Theorem
+}
+
+\newtcolorbox{example}{
+  colback=yellow!5!white,
+  colframe=orange!75!black,
+  title=Example
+}
+
+\newtcolorbox{intuition}{
+  colback=green!5!white,
+  colframe=green!75!black,
+  title=Intuition
+}
+
+\newtcolorbox{notation}{
+  colback=purple!5!white,
+  colframe=purple!75!black,
+  title=Notation
+}
+
+\title{\textbf{Mathematical Foundations for HRP: \\
+A Complete Dictionary from First Principles}}
+\author{Reference Guide for Portfolio Theory and Beyond}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides a comprehensive, self-contained reference for all mathematical and statistical concepts needed to understand Hierarchical Risk Parity (HRP) and modern portfolio theory. Each entry includes formal definitions, intuitive explanations, examples, and connections to related concepts. This serves as both a dictionary for quick lookup and a tutorial for learning from scratch.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Probability and Statistics}
+
+\subsection{Random Variable}
+
+\begin{definition}
+A \textbf{random variable} $X$ is a function that assigns a numerical value to each outcome of a random experiment. We write $X: \Omega \to \mathbb{R}$, where $\Omega$ is the sample space (set of all possible outcomes).
+\end{definition}
+
+\begin{intuition}
+A random variable is simply a quantity whose value depends on chance. Examples:
+\begin{itemize}
+  \item $X$ = the return of a stock tomorrow (could be any number)
+  \item $X$ = the number rolled on a die (1, 2, 3, 4, 5, or 6)
+  \item $X$ = the temperature at noon (continuous value)
+\end{itemize}
+
+Random variables come in two types:
+\begin{itemize}
+  \item \textbf{Discrete}: Takes on countable values (e.g., die roll, coin flips)
+  \item \textbf{Continuous}: Takes on any value in an interval (e.g., stock returns, temperature)
+\end{itemize}
+\end{intuition}
+
+\begin{notation}
+\begin{itemize}
+  \item Capital letters ($X$, $Y$, $Z$) denote random variables
+  \item Lowercase letters ($x$, $y$, $z$) denote specific values
+  \item $P(X = x)$ means "probability that $X$ equals $x$"
+  \item $P(X \leq x)$ means "probability that $X$ is at most $x$"
+\end{itemize}
+\end{notation}
+
+\subsection{Expected Value (Mean)}
+
+\begin{definition}
+The \textbf{expected value} or \textbf{mean} of a random variable $X$ is:
+
+For discrete $X$:
+$$\mathbb{E}[X] = \mu = \sum_{i} x_i P(X = x_i)$$
+
+For continuous $X$:
+$$\mathbb{E}[X] = \mu = \int_{-\infty}^{\infty} x f(x) dx$$
+
+where $f(x)$ is the probability density function.
+\end{definition}
+
+\begin{intuition}
+The expected value is the long-run average if you repeat the experiment many times. It's the "center of mass" of the probability distribution.
+
+Think of it as a weighted average where each outcome is weighted by its probability.
+\end{intuition}
+
+\begin{example}
+Roll a fair six-sided die. What's the expected value?
+\begin{align*}
+\mathbb{E}[X] &= 1 \cdot \frac{1}{6} + 2 \cdot \frac{1}{6} + 3 \cdot \frac{1}{6} + 4 \cdot \frac{1}{6} + 5 \cdot \frac{1}{6} + 6 \cdot \frac{1}{6} \\
+&= \frac{1 + 2 + 3 + 4 + 5 + 6}{6} = \frac{21}{6} = 3.5
+\end{align*}
+
+Note: You can never roll 3.5, but this is the average outcome over many rolls.
+\end{example}
+
+\begin{theorem}[Linearity of Expectation]
+For random variables $X$ and $Y$ and constants $a$, $b$:
+$$\mathbb{E}[aX + bY] = a\mathbb{E}[X] + b\mathbb{E}[Y]$$
+
+This holds even if $X$ and $Y$ are dependent!
+\end{theorem}
+
+\subsection{Variance}
+
+\begin{definition}
+The \textbf{variance} of a random variable $X$ measures the spread or dispersion around the mean:
+$$\text{Var}(X) = \sigma^2 = \mathbb{E}[(X - \mu)^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2$$
+\end{definition}
+
+\begin{intuition}
+Variance measures "how spread out" the values are from the average.
+
+\begin{itemize}
+  \item High variance: Values are widely dispersed (unpredictable)
+  \item Low variance: Values cluster near the mean (predictable)
+  \item Variance = 0: No randomness; $X$ is constant
+\end{itemize}
+
+Why square the deviations? So positive and negative deviations don't cancel out, and to give more weight to large deviations.
+\end{intuition}
+
+\begin{example}
+Compare two stocks:
+\begin{itemize}
+  \item Stock A: Returns are always exactly 10\% (variance = 0)
+  \item Stock B: Returns are 0\%, 10\%, or 20\% with equal probability (variance $> 0$)
+\end{itemize}
+
+Both have expected return 10\%, but Stock B is riskier (higher variance).
+\end{example}
+
+\subsection{Standard Deviation}
+
+\begin{definition}
+The \textbf{standard deviation} is the square root of the variance:
+$$\sigma = \sqrt{\text{Var}(X)} = \sqrt{\sigma^2}$$
+\end{definition}
+
+\begin{intuition}
+Standard deviation is more interpretable than variance because it's in the same units as the original data. If $X$ is a stock return in percent, then $\sigma$ is also in percent, while $\sigma^2$ is in "percent squared" (harder to interpret).
+
+Rule of thumb for normal distributions:
+\begin{itemize}
+  \item About 68\% of values fall within $\mu \pm \sigma$
+  \item About 95\% of values fall within $\mu \pm 2\sigma$
+  \item About 99.7\% of values fall within $\mu \pm 3\sigma$
+\end{itemize}
+\end{intuition}
+
+\subsection{Covariance}
+
+\begin{definition}
+The \textbf{covariance} between two random variables $X$ and $Y$ measures how they vary together:
+$$\text{Cov}(X, Y) = \sigma_{XY} = \mathbb{E}[(X - \mu_X)(Y - \mu_Y)] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y]$$
+\end{definition}
+
+\begin{intuition}
+Covariance tells us about the linear relationship between two variables:
+\begin{itemize}
+  \item $\text{Cov}(X, Y) > 0$: When $X$ is above its mean, $Y$ tends to be above its mean (positive relationship)
+  \item $\text{Cov}(X, Y) < 0$: When $X$ is above its mean, $Y$ tends to be below its mean (negative relationship)
+  \item $\text{Cov}(X, Y) = 0$: No linear relationship (but could still have nonlinear relationship!)
+\end{itemize}
+
+Important: $\text{Cov}(X, X) = \text{Var}(X)$ (covariance of a variable with itself is its variance)
+\end{intuition}
+
+\begin{example}
+Consider:
+\begin{itemize}
+  \item $X$ = temperature in Celsius
+  \item $Y$ = ice cream sales
+\end{itemize}
+
+We expect $\text{Cov}(X, Y) > 0$ because hot days (high $X$) typically have high ice cream sales (high $Y$).
+\end{example}
+
+\begin{theorem}[Properties of Covariance]
+\begin{enumerate}
+  \item Symmetry: $\text{Cov}(X, Y) = \text{Cov}(Y, X)$
+  \item Linearity: $\text{Cov}(aX + b, Y) = a \cdot \text{Cov}(X, Y)$
+  \item Additivity: $\text{Cov}(X + Y, Z) = \text{Cov}(X, Z) + \text{Cov}(Y, Z)$
+  \item Variance of sum: $\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y) + 2\text{Cov}(X, Y)$
+\end{enumerate}
+\end{theorem}
+
+\subsection{Correlation}
+
+\begin{definition}
+The \textbf{correlation coefficient} between $X$ and $Y$ is:
+$$\rho_{XY} = \text{Cor}(X, Y) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} = \frac{\sigma_{XY}}{\sigma_X \sigma_Y}$$
+\end{definition}
+
+\begin{intuition}
+Correlation is covariance normalized to the range $[-1, 1]$. This makes it easier to interpret:
+
+\begin{itemize}
+  \item $\rho = 1$: Perfect positive linear relationship ($Y = aX + b$ with $a > 0$)
+  \item $\rho = -1$: Perfect negative linear relationship ($Y = aX + b$ with $a < 0$)
+  \item $\rho = 0$: No linear relationship
+  \item $|\rho|$ close to 1: Strong linear relationship
+  \item $|\rho|$ close to 0: Weak linear relationship
+\end{itemize}
+
+Important: Correlation measures only \textit{linear} relationships. Two variables can have correlation 0 but still be strongly related nonlinearly (e.g., $Y = X^2$).
+\end{intuition}
+
+\begin{example}
+Real-world correlations:
+\begin{itemize}
+  \item Height and weight: $\rho \approx 0.7$ (positive, strong)
+  \item Price and demand: $\rho \approx -0.6$ (negative, moderate)
+  \item Uncorrelated: Shoe size and IQ: $\rho \approx 0$
+\end{itemize}
+
+In finance:
+\begin{itemize}
+  \item S\&P 500 and NASDAQ: $\rho \approx 0.9$ (highly correlated)
+  \item Stocks and bonds: $\rho \approx 0.2$ (weakly correlated)
+  \item Gold and dollar: $\rho \approx -0.3$ (weakly negatively correlated)
+\end{itemize}
+\end{example}
+
+\subsection{Independence}
+
+\begin{definition}
+Two random variables $X$ and $Y$ are \textbf{independent} if knowing the value of one gives no information about the other. Formally:
+$$P(X = x, Y = y) = P(X = x) \cdot P(Y = y) \quad \text{for all } x, y$$
+
+Or equivalently: $\mathbb{E}[XY] = \mathbb{E}[X] \cdot \mathbb{E}[Y]$
+\end{definition}
+
+\begin{intuition}
+Independence is a very strong condition. It means the variables are completely unrelated.
+
+Key relationships:
+\begin{itemize}
+  \item If $X$ and $Y$ are independent, then $\text{Cov}(X, Y) = 0$ and $\rho_{XY} = 0$
+  \item But the converse is NOT true: $\text{Cov}(X, Y) = 0$ does not imply independence!
+  \item Independence $\implies$ Uncorrelated
+  \item Uncorrelated $\not\implies$ Independent
+\end{itemize}
+\end{intuition}
+
+\begin{example}
+\textbf{Independent variables:}
+Roll two dice separately. The outcomes are independent.
+
+\textbf{Dependent but uncorrelated:}
+Let $X \sim \text{Uniform}(-1, 1)$ and $Y = X^2$. Then:
+\begin{itemize}
+  \item $X$ and $Y$ are clearly dependent (knowing $X$ tells you $Y$ exactly)
+  \item But $\text{Cov}(X, Y) = 0$ due to symmetry!
+  \item This shows correlation only captures \textit{linear} dependence
+\end{itemize}
+\end{example}
+
+\subsection{Normal (Gaussian) Distribution}
+
+\begin{definition}
+A random variable $X$ has a \textbf{normal distribution} with mean $\mu$ and variance $\sigma^2$, written $X \sim N(\mu, \sigma^2)$, if its probability density function is:
+$$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$$
+\end{definition}
+
+\begin{intuition}
+The normal distribution is:
+\begin{itemize}
+  \item Bell-shaped and symmetric around the mean
+  \item Characterized by just two parameters: mean $\mu$ (location) and variance $\sigma^2$ (spread)
+  \item The most important distribution in statistics due to the Central Limit Theorem
+  \item Common in nature and finance (approximately)
+\end{itemize}
+
+The \textbf{standard normal} distribution has $\mu = 0$ and $\sigma^2 = 1$: $Z \sim N(0, 1)$.
+
+Any normal variable can be standardized: If $X \sim N(\mu, \sigma^2)$, then $Z = \frac{X - \mu}{\sigma} \sim N(0, 1)$.
+\end{intuition}
+
+\subsection{Sample vs. Population}
+
+\begin{definition}
+\begin{itemize}
+  \item \textbf{Population}: The entire group we're interested in
+  \item \textbf{Sample}: A subset of the population we actually observe
+  \item \textbf{Population parameters}: True values (e.g., $\mu$, $\sigma^2$) - usually unknown
+  \item \textbf{Sample statistics}: Estimates computed from data (e.g., $\bar{x}$, $s^2$)
+\end{itemize}
+\end{definition}
+
+\begin{notation}
+\begin{tabular}{lll}
+\textbf{Quantity} & \textbf{Population} & \textbf{Sample} \\
+\hline
+Mean & $\mu$ & $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$ \\
+Variance & $\sigma^2$ & $s^2 = \frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2$ \\
+Std. Dev. & $\sigma$ & $s = \sqrt{s^2}$ \\
+Covariance & $\sigma_{XY}$ & $s_{XY} = \frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})$ \\
+Correlation & $\rho_{XY}$ & $r_{XY} = \frac{s_{XY}}{s_X s_Y}$
+\end{tabular}
+\end{notation}
+
+\begin{intuition}
+Think of it this way:
+\begin{itemize}
+  \item Population parameters are the "truth" we want to know
+  \item Sample statistics are our best guesses based on limited data
+  \item As sample size $n \to \infty$, sample statistics $\to$ population parameters
+\end{itemize}
+
+Why $n-1$ instead of $n$ in sample variance? This is called Bessel's correction. It makes the sample variance an unbiased estimator of the population variance. With $n$ in the denominator, we'd systematically underestimate the true variance.
+\end{intuition}
+
+\newpage
+\section{Linear Algebra}
+
+\subsection{Vector}
+
+\begin{definition}
+A \textbf{vector} is an ordered list of numbers. A vector with $n$ components is written:
+$$\mathbf{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}$$
+
+This is a \textbf{column vector}. A \textbf{row vector} is written: $\mathbf{v}^T = (v_1, v_2, \ldots, v_n)$.
+\end{definition}
+
+\begin{intuition}
+Vectors represent:
+\begin{itemize}
+  \item Points in space: $(x, y, z)$ is a point in 3D space
+  \item Directions: An arrow from origin to $(x, y, z)$
+  \item Data: A portfolio weight vector $\mathbf{w} = (w_1, w_2, \ldots, w_N)$
+\end{itemize}
+
+In portfolio theory:
+\begin{itemize}
+  \item Weight vector: $\mathbf{w}$ (how much in each asset)
+  \item Return vector: $\mathbf{r}$ (return of each asset)
+  \item Mean vector: $\boldsymbol{\mu}$ (expected return of each asset)
+\end{itemize}
+\end{intuition}
+
+\subsection{Matrix}
+
+\begin{definition}
+A \textbf{matrix} is a rectangular array of numbers with $m$ rows and $n$ columns:
+$$\mathbf{A} = \begin{pmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{pmatrix}$$
+
+This is an $m \times n$ matrix. Element $a_{ij}$ is in row $i$, column $j$.
+\end{definition}
+
+\begin{intuition}
+Matrices represent:
+\begin{itemize}
+  \item Systems of equations
+  \item Linear transformations
+  \item Relationships between multiple variables
+\end{itemize}
+
+In portfolio theory, the covariance matrix $\boldsymbol{\Sigma}$ is an $N \times N$ matrix where:
+\begin{itemize}
+  \item Diagonal entries: $\sigma_{ii} = \text{Var}(r_i)$ (variance of asset $i$)
+  \item Off-diagonal entries: $\sigma_{ij} = \text{Cov}(r_i, r_j)$ (covariance between assets $i$ and $j$)
+\end{itemize}
+\end{intuition}
+
+\subsection{Matrix-Vector Multiplication}
+
+\begin{definition}
+If $\mathbf{A}$ is an $m \times n$ matrix and $\mathbf{v}$ is an $n \times 1$ vector, their product $\mathbf{A}\mathbf{v}$ is an $m \times 1$ vector:
+$$(\mathbf{A}\mathbf{v})_i = \sum_{j=1}^{n} a_{ij} v_j$$
+
+In other words, the $i$-th component of $\mathbf{A}\mathbf{v}$ is the dot product of the $i$-th row of $\mathbf{A}$ with $\mathbf{v}$.
+\end{definition}
+
+\begin{example}
+$$\begin{pmatrix} 1 & 2 \\ 3 & 4 \\ 5 & 6 \end{pmatrix} \begin{pmatrix} 7 \\ 8 \end{pmatrix} = \begin{pmatrix} 1(7) + 2(8) \\ 3(7) + 4(8) \\ 5(7) + 6(8) \end{pmatrix} = \begin{pmatrix} 23 \\ 53 \\ 83 \end{pmatrix}$$
+\end{example}
+
+\subsection{Transpose}
+
+\begin{definition}
+The \textbf{transpose} of a matrix $\mathbf{A}$, denoted $\mathbf{A}^T$, is obtained by swapping rows and columns:
+$$(\mathbf{A}^T)_{ij} = a_{ji}$$
+
+If $\mathbf{A}$ is $m \times n$, then $\mathbf{A}^T$ is $n \times m$.
+\end{definition}
+
+\begin{intuition}
+Transpose "flips" the matrix along its diagonal:
+$$\begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{pmatrix}^T = \begin{pmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{pmatrix}$$
+
+For a vector: $\mathbf{v}^T$ changes column to row, or row to column.
+
+Properties:
+\begin{itemize}
+  \item $(\mathbf{A}^T)^T = \mathbf{A}$
+  \item $(\mathbf{AB})^T = \mathbf{B}^T\mathbf{A}^T$ (order reverses!)
+  \item $(\mathbf{A} + \mathbf{B})^T = \mathbf{A}^T + \mathbf{B}^T$
+\end{itemize}
+\end{intuition}
+
+\subsection{Inner Product (Dot Product)}
+
+\begin{definition}
+The \textbf{inner product} (or \textbf{dot product}) of two vectors $\mathbf{u}$ and $\mathbf{v}$ is:
+$$\mathbf{u} \cdot \mathbf{v} = \mathbf{u}^T \mathbf{v} = \sum_{i=1}^{n} u_i v_i$$
+
+Result is a scalar (single number).
+\end{definition}
+
+\begin{intuition}
+The inner product measures how much two vectors "point in the same direction":
+\begin{itemize}
+  \item $\mathbf{u}^T \mathbf{v} > 0$: Vectors point in similar directions
+  \item $\mathbf{u}^T \mathbf{v} < 0$: Vectors point in opposite directions
+  \item $\mathbf{u}^T \mathbf{v} = 0$: Vectors are orthogonal (perpendicular)
+\end{itemize}
+
+In portfolio theory: $\mathbf{w}^T \boldsymbol{\mu}$ gives the portfolio expected return (weighted sum of individual returns).
+\end{intuition}
+
+\subsection{Quadratic Form}
+
+\begin{definition}
+A \textbf{quadratic form} is an expression of the form:
+$$\mathbf{x}^T \mathbf{A} \mathbf{x} = \sum_{i=1}^{n} \sum_{j=1}^{n} x_i a_{ij} x_j$$
+
+where $\mathbf{A}$ is an $n \times n$ matrix and $\mathbf{x}$ is an $n \times 1$ vector.
+\end{definition}
+
+\begin{intuition}
+Quadratic forms generalize the concept of $ax^2$ (quadratic in one variable) to multiple variables.
+
+In portfolio theory, $\mathbf{w}^T \boldsymbol{\Sigma} \mathbf{w}$ is a quadratic form that gives portfolio variance:
+$$\sigma_p^2 = \mathbf{w}^T \boldsymbol{\Sigma} \mathbf{w} = \sum_{i=1}^{N} \sum_{j=1}^{N} w_i \sigma_{ij} w_j$$
+
+This captures both:
+\begin{itemize}
+  \item Individual variances (diagonal terms: $w_i^2 \sigma_i^2$)
+  \item Covariances (off-diagonal terms: $2 w_i w_j \sigma_{ij}$ when $i \neq j$)
+\end{itemize}
+\end{intuition}
+
+\subsection{Symmetric Matrix}
+
+\begin{definition}
+A matrix $\mathbf{A}$ is \textbf{symmetric} if $\mathbf{A} = \mathbf{A}^T$, i.e., $a_{ij} = a_{ji}$ for all $i, j$.
+\end{definition}
+
+\begin{intuition}
+A symmetric matrix is mirror-symmetric across its main diagonal:
+$$\begin{pmatrix} 1 & 2 & 3 \\ 2 & 4 & 5 \\ 3 & 5 & 6 \end{pmatrix}$$
+
+Covariance and correlation matrices are always symmetric because $\text{Cov}(X, Y) = \text{Cov}(Y, X)$.
+
+Symmetric matrices have special properties:
+\begin{itemize}
+  \item All eigenvalues are real
+  \item Eigenvectors from different eigenvalues are orthogonal
+  \item Can be diagonalized by an orthogonal matrix
+\end{itemize}
+\end{intuition}
+
+\subsection{Positive Definite Matrix}
+
+\begin{definition}
+A symmetric matrix $\mathbf{A}$ is \textbf{positive definite} if:
+$$\mathbf{x}^T \mathbf{A} \mathbf{x} > 0 \quad \text{for all } \mathbf{x} \neq \mathbf{0}$$
+
+It is \textbf{positive semi-definite} if $\mathbf{x}^T \mathbf{A} \mathbf{x} \geq 0$.
+\end{definition}
+
+\begin{intuition}
+Positive definite matrices generalize the concept of "positive numbers" to matrices.
+
+Equivalently, $\mathbf{A}$ is positive definite if all its eigenvalues are positive.
+
+Covariance matrices are always positive semi-definite because:
+$$\text{Var}(\mathbf{a}^T \mathbf{r}) = \mathbf{a}^T \boldsymbol{\Sigma} \mathbf{a} \geq 0$$
+(variance is never negative)
+
+A covariance matrix is positive definite if no asset is a perfect linear combination of others (no redundancy).
+\end{intuition}
+
+\subsection{Matrix Inverse}
+
+\begin{definition}
+The \textbf{inverse} of a square matrix $\mathbf{A}$, denoted $\mathbf{A}^{-1}$, satisfies:
+$$\mathbf{A} \mathbf{A}^{-1} = \mathbf{A}^{-1} \mathbf{A} = \mathbf{I}$$
+
+where $\mathbf{I}$ is the identity matrix (1's on diagonal, 0's elsewhere).
+
+Not all matrices have inverses. $\mathbf{A}^{-1}$ exists if and only if $\mathbf{A}$ is \textbf{non-singular} (determinant $\neq 0$).
+\end{definition}
+
+\begin{intuition}
+Matrix inverse generalizes division: $\mathbf{A}^{-1}$ is like "$1/\mathbf{A}$".
+
+To solve $\mathbf{A}\mathbf{x} = \mathbf{b}$:
+$$\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$$
+
+In portfolio theory, Markowitz optimization requires computing $\boldsymbol{\Sigma}^{-1}$, which is where problems arise when the covariance matrix is ill-conditioned.
+
+Computing matrix inverses is:
+\begin{itemize}
+  \item Expensive: $O(N^3)$ operations for $N \times N$ matrix
+  \item Numerically unstable if the matrix is nearly singular
+\end{itemize}
+\end{intuition}
+
+\subsection{Eigenvalues and Eigenvectors}
+
+\begin{definition}
+For a square matrix $\mathbf{A}$, a scalar $\lambda$ is an \textbf{eigenvalue} and $\mathbf{v}$ is the corresponding \textbf{eigenvector} if:
+$$\mathbf{A}\mathbf{v} = \lambda \mathbf{v}, \quad \mathbf{v} \neq \mathbf{0}$$
+\end{definition}
+
+\begin{intuition}
+An eigenvector is a direction that the matrix just stretches (doesn't rotate). The eigenvalue tells you the stretching factor.
+
+Geometrically: When $\mathbf{A}$ acts on $\mathbf{v}$, it simply scales $\mathbf{v}$ by $\lambda$.
+
+For a covariance matrix:
+\begin{itemize}
+  \item Eigenvalues represent variances along principal directions
+  \item Eigenvectors represent these principal directions
+  \item Largest eigenvalue: direction of maximum variance
+  \item This is the foundation of Principal Component Analysis (PCA)
+\end{itemize}
+
+Every $N \times N$ matrix has $N$ eigenvalues (counting multiplicities, including complex ones). For symmetric matrices, all eigenvalues are real.
+\end{intuition}
+
+\begin{example}
+Consider $\mathbf{A} = \begin{pmatrix} 2 & 0 \\ 0 & 3 \end{pmatrix}$.
+
+Eigenvalues: $\lambda_1 = 2$, $\lambda_2 = 3$
+
+Eigenvectors: $\mathbf{v}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$, $\mathbf{v}_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$
+
+Check: $\mathbf{A}\mathbf{v}_1 = \begin{pmatrix} 2 \\ 0 \end{pmatrix} = 2\mathbf{v}_1$ \checkmark
+\end{example}
+
+\subsection{Determinant}
+
+\begin{definition}
+The \textbf{determinant} of a square matrix $\mathbf{A}$, denoted $\det(\mathbf{A})$ or $|\mathbf{A}|$, is a scalar value that encodes certain properties.
+
+For $2 \times 2$: $\det\begin{pmatrix} a & b \\ c & d \end{pmatrix} = ad - bc$
+
+For larger matrices, determinant is computed recursively (or using eigenvalues: $\det(\mathbf{A}) = \prod_i \lambda_i$).
+\end{definition}
+
+\begin{intuition}
+Determinant has several interpretations:
+\begin{itemize}
+  \item Scaling factor: How much $\mathbf{A}$ scales volumes
+  \item Invertibility: $\det(\mathbf{A}) \neq 0$ if and only if $\mathbf{A}$ is invertible
+  \item Zero determinant: Matrix is singular (some information is lost/redundant)
+\end{itemize}
+
+For covariance matrices:
+\begin{itemize}
+  \item $\det(\boldsymbol{\Sigma}) = 0$: Perfect multicollinearity (some assets are redundant)
+  \item Small $\det(\boldsymbol{\Sigma})$: Near-multicollinearity (assets highly correlated)
+  \item This relates to the condition number and instability
+\end{itemize}
+\end{intuition}
+
+\subsection{Condition Number}
+
+\begin{definition}
+The \textbf{condition number} of a matrix $\mathbf{A}$ is:
+$$\kappa(\mathbf{A}) = \frac{\lambda_{\max}}{\lambda_{\min}} = \frac{\text{largest eigenvalue}}{\text{smallest eigenvalue}}$$
+
+For symmetric positive definite matrices, this measures the "shape" of the matrix.
+\end{definition}
+
+\begin{intuition}
+Condition number measures how "stretched" the matrix is in different directions:
+\begin{itemize}
+  \item $\kappa(\mathbf{A}) = 1$: Matrix scales all directions equally (like a sphere)
+  \item $\kappa(\mathbf{A}) \gg 1$: Matrix stretches some directions much more than others (like a cigar)
+  \item $\kappa(\mathbf{A}) = \infty$: Matrix is singular (completely flattens some direction)
+\end{itemize}
+
+Why it matters for numerical stability:
+\begin{itemize}
+  \item A small error in input gets amplified by up to $\kappa(\mathbf{A})$ in the output
+  \item $\kappa(\mathbf{A}) = 10^6$ means a 0.01\% input error can become a 10,000\% output error!
+  \item This is why Markowitz optimization fails when correlations are high
+\end{itemize}
+
+Rule of thumb:
+\begin{itemize}
+  \item $\kappa < 100$: Well-conditioned
+  \item $100 < \kappa < 10,000$: Moderately ill-conditioned
+  \item $\kappa > 10,000$: Severely ill-conditioned
+\end{itemize}
+\end{intuition}
+
+\newpage
+\section{Optimization Theory}
+
+\subsection{Objective Function}
+
+\begin{definition}
+An \textbf{objective function} (or \textbf{cost function}) is the function we want to minimize or maximize. Written as:
+$$f(\mathbf{x}): \mathbb{R}^n \to \mathbb{R}$$
+
+where $\mathbf{x} = (x_1, \ldots, x_n)$ are the decision variables.
+\end{definition}
+
+\begin{intuition}
+The objective function quantifies what we care about:
+\begin{itemize}
+  \item In portfolio theory: We might minimize risk $f(\mathbf{w}) = \mathbf{w}^T\boldsymbol{\Sigma}\mathbf{w}$
+  \item In machine learning: We might minimize prediction error
+  \item In engineering: We might minimize cost or maximize efficiency
+\end{itemize}
+
+Maximizing $f(\mathbf{x})$ is equivalent to minimizing $-f(\mathbf{x})$, so we typically just talk about minimization.
+\end{intuition}
+
+\subsection{Constraint}
+
+\begin{definition}
+A \textbf{constraint} restricts the feasible values of decision variables:
+\begin{itemize}
+  \item \textbf{Equality constraint}: $h(\mathbf{x}) = 0$
+  \item \textbf{Inequality constraint}: $g(\mathbf{x}) \leq 0$
+\end{itemize}
+
+The set of all $\mathbf{x}$ satisfying all constraints is the \textbf{feasible region}.
+\end{definition}
+
+\begin{example}
+In portfolio optimization:
+\begin{itemize}
+  \item Equality: $\sum_{i=1}^{N} w_i = 1$ (weights sum to 100\%)
+  \item Inequality: $w_i \geq 0$ for all $i$ (no short selling)
+  \item Inequality: $w_i \leq 0.1$ for all $i$ (no more than 10\% in any asset)
+\end{itemize}
+\end{example}
+
+\subsection{Unconstrained Optimization}
+
+\begin{definition}
+Find $\mathbf{x}^*$ that minimizes $f(\mathbf{x})$ with no constraints:
+$$\mathbf{x}^* = \arg\min_{\mathbf{x}} f(\mathbf{x})$$
+\end{definition}
+
+\begin{theorem}[First-Order Condition]
+If $f$ is differentiable and $\mathbf{x}^*$ is a local minimum, then:
+$$\nabla f(\mathbf{x}^*) = \mathbf{0}$$
+
+where $\nabla f$ is the gradient (vector of partial derivatives):
+$$\nabla f = \begin{pmatrix} \frac{\partial f}{\partial x_1} \\ \vdots \\ \frac{\partial f}{\partial x_n} \end{pmatrix}$$
+\end{theorem}
+
+\begin{intuition}
+At a minimum, the function isn't increasing in any direction, so all directional derivatives are zero (gradient is zero).
+
+This is like the single-variable calculus condition $f'(x) = 0$ at extrema, but generalized to multiple dimensions.
+
+Warning: $\nabla f = \mathbf{0}$ is necessary but not sufficient. The point could be a maximum or saddle point!
+\end{intuition}
+
+\subsection{Lagrange Multipliers}
+
+\begin{definition}
+To optimize $f(\mathbf{x})$ subject to equality constraints $h_i(\mathbf{x}) = 0$, form the \textbf{Lagrangian}:
+$$\mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}) = f(\mathbf{x}) - \sum_{i=1}^{m} \lambda_i h_i(\mathbf{x})$$
+
+where $\lambda_i$ are \textbf{Lagrange multipliers}.
+\end{definition}
+
+\begin{theorem}[Lagrange Multiplier Conditions]
+At an optimum $\mathbf{x}^*$, there exist multipliers $\boldsymbol{\lambda}^*$ such that:
+\begin{align*}
+\nabla_{\mathbf{x}} \mathcal{L}(\mathbf{x}^*, \boldsymbol{\lambda}^*) &= \mathbf{0} \quad \text{(gradient w.r.t. } \mathbf{x} \text{)} \\
+h_i(\mathbf{x}^*) &= 0 \quad \text{for all } i \quad \text{(constraints)}
+\end{align*}
+\end{theorem}
+
+\begin{intuition}
+Lagrange multipliers convert a constrained problem into an unconstrained one. The multiplier $\lambda_i$ represents the "shadow price" or marginal value of relaxing constraint $i$.
+
+Geometrically: At the optimum, the gradient of $f$ must be perpendicular to the constraint surface (otherwise you could move along the constraint to improve $f$).
+\end{intuition}
+
+\begin{example}
+Minimize $f(x, y) = x^2 + y^2$ subject to $x + y = 1$.
+
+Lagrangian: $\mathcal{L}(x, y, \lambda) = x^2 + y^2 - \lambda(x + y - 1)$
+
+Conditions:
+\begin{align*}
+\frac{\partial \mathcal{L}}{\partial x} &= 2x - \lambda = 0 \implies x = \lambda/2 \\
+\frac{\partial \mathcal{L}}{\partial y} &= 2y - \lambda = 0 \implies y = \lambda/2 \\
+x + y &= 1
+\end{align*}
+
+Solving: $\lambda/2 + \lambda/2 = 1 \implies \lambda = 1 \implies x = y = 1/2$
+
+Minimum value: $f(1/2, 1/2) = 1/4$
+\end{example}
+
+\subsection{Convex Function}
+
+\begin{definition}
+A function $f: \mathbb{R}^n \to \mathbb{R}$ is \textbf{convex} if for any $\mathbf{x}, \mathbf{y}$ and $0 \leq t \leq 1$:
+$$f(t\mathbf{x} + (1-t)\mathbf{y}) \leq t f(\mathbf{x}) + (1-t)f(\mathbf{y})$$
+
+Geometrically: The line segment connecting any two points on the graph lies above the graph.
+\end{definition}
+
+\begin{intuition}
+Convex functions are "bowl-shaped" - they curve upward.
+
+Examples:
+\begin{itemize}
+  \item Convex: $x^2$, $e^x$, $|x|$, $\mathbf{x}^T\mathbf{A}\mathbf{x}$ (if $\mathbf{A}$ positive definite)
+  \item Not convex: $\sin(x)$, $x^3$, $-x^2$ (concave)
+\end{itemize}
+
+Why convexity matters:
+\begin{itemize}
+  \item Convex functions have no local minima that aren't global minima
+  \item If you find a point where $\nabla f = \mathbf{0}$, it's guaranteed to be the global minimum
+  \item Optimization algorithms are guaranteed to converge
+\end{itemize}
+
+Portfolio variance $\mathbf{w}^T\boldsymbol{\Sigma}\mathbf{w}$ is convex (since $\boldsymbol{\Sigma}$ is positive semi-definite), which is why Markowitz optimization is theoretically nice.
+\end{intuition}
+
+\subsection{Quadratic Programming}
+
+\begin{definition}
+A \textbf{quadratic program} (QP) has the form:
+\begin{align*}
+\text{minimize} \quad & \frac{1}{2}\mathbf{x}^T\mathbf{Q}\mathbf{x} + \mathbf{c}^T\mathbf{x} \\
+\text{subject to} \quad & \mathbf{A}\mathbf{x} = \mathbf{b} \\
+& \mathbf{G}\mathbf{x} \leq \mathbf{h}
+\end{align*}
+
+where $\mathbf{Q}$ is a symmetric matrix (objective is quadratic), and constraints are linear.
+\end{definition}
+
+\begin{intuition}
+Markowitz portfolio optimization is a quadratic program:
+\begin{align*}
+\text{minimize} \quad & \mathbf{w}^T\boldsymbol{\Sigma}\mathbf{w} \quad \text{(variance)} \\
+\text{subject to} \quad & \mathbf{w}^T\mathbf{1} = 1 \quad \text{(weights sum to 1)} \\
+& \mathbf{w}^T\boldsymbol{\mu} = \mu_{\text{target}} \quad \text{(target return)} \\
+& \mathbf{w} \geq \mathbf{0} \quad \text{(no short selling)}
+\end{align*}
+
+QPs can be solved efficiently (though still requiring $O(N^3)$ operations), but the solution is sensitive to inputs when $\mathbf{Q}$ (here $\boldsymbol{\Sigma}$) is ill-conditioned.
+\end{intuition}
+
+\newpage
+\section{Graph Theory}
+
+\subsection{Graph}
+
+\begin{definition}
+A \textbf{graph} $G = (V, E)$ consists of:
+\begin{itemize}
+  \item $V$: A set of \textbf{vertices} (or \textbf{nodes})
+  \item $E$: A set of \textbf{edges} connecting pairs of vertices
+\end{itemize}
+
+An edge connecting vertices $i$ and $j$ is written $(i, j)$ or $\{i, j\}$.
+\end{definition}
+
+\begin{intuition}
+Graphs represent relationships or connections:
+\begin{itemize}
+  \item Social network: Vertices = people, edges = friendships
+  \item Road network: Vertices = cities, edges = roads
+  \item Portfolio: Vertices = assets, edges = correlations
+\end{itemize}
+
+Types of graphs:
+\begin{itemize}
+  \item \textbf{Undirected}: Edges have no direction (friendship is mutual)
+  \item \textbf{Directed}: Edges have direction (Twitter follow isn't mutual)
+  \item \textbf{Weighted}: Edges have numerical weights (road distances, correlation strengths)
+\end{itemize}
+\end{intuition}
+
+\subsection{Complete Graph}
+
+\begin{definition}
+A \textbf{complete graph} on $N$ vertices has an edge between every pair of vertices. It has exactly $\binom{N}{2} = \frac{N(N-1)}{2}$ edges.
+\end{definition}
+
+\begin{intuition}
+In a complete graph, every node is directly connected to every other node.
+
+In portfolio theory:
+\begin{itemize}
+  \item A covariance matrix represents a complete graph
+  \item Each asset (vertex) has a relationship (covariance) with every other asset
+  \item For 50 assets: $\binom{50}{2} = 1225$ pairwise relationships!
+  \item This complexity is part of why covariance estimation is hard
+\end{itemize}
+\end{intuition}
+
+\subsection{Tree}
+
+\begin{definition}
+A \textbf{tree} is a connected graph with no cycles. Equivalently:
+\begin{itemize}
+  \item A tree with $N$ vertices has exactly $N-1$ edges
+  \item There is exactly one path between any two vertices
+  \item Removing any edge disconnects the graph
+\end{itemize}
+\end{definition}
+
+\begin{intuition}
+Trees are the simplest connected structures - like a family tree or organization chart.
+
+Key properties:
+\begin{itemize}
+  \item No redundant connections (removing any edge breaks connectivity)
+  \item Hierarchical structure
+  \item Very efficient: $N-1$ edges instead of $\frac{N(N-1)}{2}$ for complete graph
+\end{itemize}
+
+For 50 assets:
+\begin{itemize}
+  \item Complete graph: 1225 edges (relationships)
+  \item Tree: 49 edges (relationships)
+  \item This 25× reduction in complexity is why HRP is more stable!
+\end{itemize}
+\end{intuition}
+
+\subsection{Path}
+
+\begin{definition}
+A \textbf{path} in a graph is a sequence of vertices $v_1, v_2, \ldots, v_k$ where consecutive vertices are connected by edges: $(v_1, v_2), (v_2, v_3), \ldots, (v_{k-1}, v_k) \in E$.
+
+The \textbf{length} of a path is the number of edges.
+\end{definition}
+
+\subsection{Distance in Graphs}
+
+\begin{definition}
+The \textbf{distance} between two vertices in a graph is the length of the shortest path between them.
+
+In a weighted graph, distance is the sum of edge weights along the shortest path.
+\end{definition}
+
+\begin{intuition}
+In HRP:
+\begin{itemize}
+  \item We convert correlation $\rho_{ij}$ to distance $d_{ij} = \sqrt{\frac{1}{2}(1-\rho_{ij})}$
+  \item Highly correlated assets have small distance (close together)
+  \item Weakly correlated assets have large distance (far apart)
+  \item The hierarchical tree groups nearby (similar) assets
+\end{itemize}
+\end{intuition}
+
+\newpage
+\section{Metric Spaces and Distance Functions}
+
+\subsection{Metric Space}
+
+\begin{definition}
+A \textbf{metric space} is a set $X$ with a \textbf{distance function} (or \textbf{metric}) $d: X \times X \to \mathbb{R}$ satisfying:
+\begin{enumerate}
+  \item \textbf{Non-negativity}: $d(x, y) \geq 0$
+  \item \textbf{Identity of indiscernibles}: $d(x, y) = 0 \iff x = y$
+  \item \textbf{Symmetry}: $d(x, y) = d(y, x)$
+  \item \textbf{Triangle inequality}: $d(x, z) \leq d(x, y) + d(y, z)$
+\end{enumerate}
+\end{definition}
+
+\begin{intuition}
+A metric space is simply a set where you can measure distances in a consistent way.
+
+The axioms formalize our intuitive notions about distance:
+\begin{enumerate}
+  \item Distances can't be negative
+  \item Only a point has zero distance to itself
+  \item Distance from A to B equals distance from B to A
+  \item Direct path is shortest (you can't shorten a trip by adding a detour)
+\end{enumerate}
+\end{intuition}
+
+\begin{example}
+Common metric spaces:
+\begin{itemize}
+  \item $\mathbb{R}^n$ with Euclidean distance: $d(\mathbf{x}, \mathbf{y}) = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2}$
+  \item $\mathbb{R}^n$ with Manhattan distance: $d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^{n}|x_i - y_i|$
+  \item Assets with correlation distance: $d(i, j) = \sqrt{\frac{1}{2}(1 - \rho_{ij})}$
+\end{itemize}
+\end{example}
+
+\subsection{Euclidean Distance}
+
+\begin{definition}
+In $\mathbb{R}^n$, the \textbf{Euclidean distance} between points $\mathbf{x}$ and $\mathbf{y}$ is:
+$$d(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\| = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2}$$
+
+This is the "straight-line" distance.
+\end{definition}
+
+\begin{intuition}
+Euclidean distance is what we measure with a ruler in physical space:
+\begin{itemize}
+  \item In 2D: $d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$ (Pythagorean theorem)
+  \item In 3D: $d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2}$
+\end{itemize}
+
+It generalizes naturally to any number of dimensions.
+\end{intuition}
+
+\subsection{Correlation-Based Distance}
+
+\begin{definition}
+For assets with correlation $\rho_{ij}$, the \textbf{correlation distance} is:
+$$d_{ij} = \sqrt{\frac{1}{2}(1 - \rho_{ij})}$$
+
+This satisfies the metric axioms.
+\end{definition}
+
+\begin{intuition}
+This formula converts correlation (which is NOT a distance) into a proper distance metric:
+
+\begin{itemize}
+  \item $\rho_{ij} = 1$ (perfectly correlated) $\implies d_{ij} = 0$ (zero distance, assets are "identical")
+  \item $\rho_{ij} = 0$ (uncorrelated) $\implies d_{ij} = \frac{1}{\sqrt{2}} \approx 0.707$ (moderate distance)
+  \item $\rho_{ij} = -1$ (perfectly anti-correlated) $\implies d_{ij} = 1$ (maximum distance, assets are "opposites")
+\end{itemize}
+
+Why not just use $d_{ij} = 1 - \rho_{ij}$? Because that doesn't satisfy the triangle inequality! The square root and factor of $\frac{1}{2}$ are carefully chosen to make it a proper metric.
+\end{intuition}
+
+\newpage
+\section{Clustering}
+
+\subsection{Clustering}
+
+\begin{definition}
+\textbf{Clustering} is the task of grouping objects so that objects in the same group (cluster) are more similar to each other than to objects in other groups.
+
+Input: Set of objects with pairwise distances/similarities
+
+Output: Partition of objects into clusters
+\end{definition}
+
+\begin{intuition}
+Clustering is unsupervised learning: we find structure without being told what the groups are.
+
+Applications:
+\begin{itemize}
+  \item Customer segmentation: Group similar customers
+  \item Image segmentation: Group pixels into objects
+  \item Document clustering: Group similar articles
+  \item Portfolio construction: Group similar assets
+\end{itemize}
+\end{intuition}
+
+\subsection{Hierarchical Clustering}
+
+\begin{definition}
+\textbf{Hierarchical clustering} builds a tree (dendrogram) of clusters. Two approaches:
+\begin{itemize}
+  \item \textbf{Agglomerative} (bottom-up): Start with each object as its own cluster; repeatedly merge closest clusters
+  \item \textbf{Divisive} (top-down): Start with all objects in one cluster; repeatedly split clusters
+\end{itemize}
+
+HRP uses agglomerative clustering.
+\end{definition}
+
+\begin{intuition}
+Agglomerative algorithm:
+\begin{enumerate}
+  \item Start: Each object is its own cluster
+  \item Repeat:
+  \begin{enumerate}
+    \item Find the two closest clusters
+    \item Merge them into a single cluster
+  \end{enumerate}
+  \item Stop: When all objects are in one cluster
+\end{enumerate}
+
+Output: A tree (dendrogram) showing the order and distance of merges. You can "cut" the tree at any level to get different numbers of clusters.
+\end{intuition}
+
+\subsection{Linkage Methods}
+
+\begin{definition}
+A \textbf{linkage method} defines the distance between two clusters $A$ and $B$:
+
+\begin{itemize}
+  \item \textbf{Single linkage}: $d(A, B) = \min_{i \in A, j \in B} d(i, j)$ (closest members)
+  \item \textbf{Complete linkage}: $d(A, B) = \max_{i \in A, j \in B} d(i, j)$ (farthest members)
+  \item \textbf{Average linkage}: $d(A, B) = \frac{1}{|A||B|}\sum_{i \in A}\sum_{j \in B} d(i, j)$ (average distance)
+  \item \textbf{Ward linkage}: Minimize increase in within-cluster variance
+\end{itemize}
+\end{definition}
+
+\begin{intuition}
+Different linkage methods produce different tree structures:
+
+\textbf{Single linkage}:
+\begin{itemize}
+  \item Pro: Simple, fast
+  \item Con: Tends to create "chains" (long, stringy clusters)
+  \item Used in HRP paper
+\end{itemize}
+
+\textbf{Complete linkage}:
+\begin{itemize}
+  \item Pro: Creates compact, spherical clusters
+  \item Con: Sensitive to outliers
+\end{itemize}
+
+\textbf{Average linkage}:
+\begin{itemize}
+  \item Pro: Balanced, robust
+  \item Con: More computationally expensive
+\end{itemize}
+
+\textbf{Ward linkage}:
+\begin{itemize}
+  \item Pro: Minimizes variance, often gives good results
+  \item Con: Only works with Euclidean distance
+\end{itemize}
+\end{intuition}
+
+\subsection{Dendrogram}
+
+\begin{definition}
+A \textbf{dendrogram} is a tree diagram that records the hierarchical clustering structure.
+
+\begin{itemize}
+  \item Leaves: Individual objects
+  \item Internal nodes: Clusters formed by merging
+  \item Height of node: Distance at which merge occurred
+\end{itemize}
+\end{definition}
+
+\begin{intuition}
+Reading a dendrogram:
+\begin{itemize}
+  \item Bottom: Individual objects
+  \item Moving up: Objects merge into clusters
+  \item Height where branches merge: Indicates how similar the merged clusters are
+  \item Low merge: Very similar clusters
+  \item High merge: Dissimilar clusters
+\end{itemize}
+
+You can "cut" the dendrogram at any height to get a flat clustering with a chosen number of clusters.
+
+In HRP, the dendrogram structure determines how we allocate capital hierarchically.
+\end{intuition}
+
+\newpage
+\section{Statistical Estimation}
+
+\subsection{Estimator}
+
+\begin{definition}
+An \textbf{estimator} is a function that maps sample data to an estimate of a population parameter.
+
+Example: The sample mean $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$ is an estimator of the population mean $\mu$.
+\end{definition}
+
+\subsection{Bias}
+
+\begin{definition}
+The \textbf{bias} of an estimator $\hat{\theta}$ for parameter $\theta$ is:
+$$\text{Bias}(\hat{\theta}) = \mathbb{E}[\hat{\theta}] - \theta$$
+
+An estimator is \textbf{unbiased} if $\mathbb{E}[\hat{\theta}] = \theta$ (on average, it equals the true value).
+\end{definition}
+
+\begin{intuition}
+Bias is systematic error: consistently over- or under-estimating.
+
+\begin{itemize}
+  \item Unbiased: Errors average to zero over many samples
+  \item Biased: Consistently wrong in one direction
+\end{itemize}
+
+Example: Sample mean $\bar{x}$ is unbiased for $\mu$, but sample variance with $n$ in denominator is biased (underestimates). Using $n-1$ makes it unbiased.
+\end{intuition}
+
+\subsection{Variance of Estimator}
+
+\begin{definition}
+The \textbf{variance} of an estimator $\hat{\theta}$ measures its variability across different samples:
+$$\text{Var}(\hat{\theta}) = \mathbb{E}[(\hat{\theta} - \mathbb{E}[\hat{\theta}])^2]$$
+
+Low variance: Estimates are consistent across samples
+
+High variance: Estimates vary widely across samples
+\end{definition}
+
+\subsection{Mean Squared Error}
+
+\begin{definition}
+The \textbf{mean squared error} (MSE) combines bias and variance:
+$$\text{MSE}(\hat{\theta}) = \mathbb{E}[(\hat{\theta} - \theta)^2] = \text{Bias}(\hat{\theta})^2 + \text{Var}(\hat{\theta})$$
+\end{definition}
+
+\begin{intuition}
+MSE measures total error:
+\begin{itemize}
+  \item Even if unbiased, high variance means poor estimates
+  \item Even if low variance, bias means systematically wrong
+  \item MSE balances both concerns
+\end{itemize}
+
+This is the \textbf{bias-variance tradeoff}: Sometimes accepting a little bias reduces variance enough to lower MSE.
+
+In portfolio optimization:
+\begin{itemize}
+  \item Markowitz: Unbiased (uses all covariance information) but high variance (unstable)
+  \item HRP: Slightly biased (uses only tree structure) but low variance (stable)
+  \item HRP has lower MSE out-of-sample!
+\end{itemize}
+\end{intuition}
+
+\subsection{Maximum Likelihood Estimation}
+
+\begin{definition}
+\textbf{Maximum likelihood estimation} (MLE) chooses the parameter value that makes the observed data most probable.
+
+Given data $x_1, \ldots, x_n$ and probability model with parameter $\theta$, the \textbf{likelihood} is:
+$$L(\theta) = P(\text{data}|\theta)$$
+
+The MLE is:
+$$\hat{\theta}_{\text{MLE}} = \arg\max_{\theta} L(\theta)$$
+\end{definition}
+
+\begin{intuition}
+MLE asks: "What parameter value makes my data least surprising?"
+
+Example: Estimate the bias of a coin. Flip 10 times, get 7 heads. What's the probability $p$ of heads?
+
+Likelihood: $L(p) = \binom{10}{7} p^7 (1-p)^3$
+
+Maximize: $\hat{p}_{\text{MLE}} = 7/10 = 0.7$
+
+Intuition: The data suggests the coin is 70\% likely to land heads.
+
+In finance, we often estimate means and covariances via MLE (which gives the sample mean and sample covariance matrix).
+\end{intuition}
+
+\newpage
+\section{Key Concepts from Information Theory}
+
+\subsection{Entropy}
+
+\begin{definition}
+The \textbf{entropy} of a discrete random variable $X$ measures its uncertainty or information content:
+$$H(X) = -\sum_{i} P(X = x_i) \log_2 P(X = x_i)$$
+
+Measured in bits (if using $\log_2$).
+\end{definition}
+
+\begin{intuition}
+Entropy quantifies "how much information" a random variable contains:
+\begin{itemize}
+  \item High entropy: Very uncertain, many possible outcomes
+  \item Low entropy: Predictable, few possible outcomes
+  \item Entropy = 0: No uncertainty (deterministic)
+\end{itemize}
+
+Example:
+\begin{itemize}
+  \item Fair coin: $H = -\frac{1}{2}\log_2(\frac{1}{2}) - \frac{1}{2}\log_2(\frac{1}{2}) = 1$ bit
+  \item Biased coin (90\% heads): $H \approx 0.47$ bits (more predictable)
+  \item Two-headed coin: $H = 0$ bits (no uncertainty)
+\end{itemize}
+\end{intuition}
+
+\subsection{Mutual Information}
+
+\begin{definition}
+The \textbf{mutual information} between random variables $X$ and $Y$ measures how much knowing one reduces uncertainty about the other:
+$$I(X; Y) = H(X) + H(Y) - H(X, Y)$$
+
+where $H(X, Y)$ is the joint entropy.
+\end{definition}
+
+\begin{intuition}
+Mutual information generalizes correlation to capture any dependence (not just linear):
+\begin{itemize}
+  \item $I(X; Y) = 0$: $X$ and $Y$ are independent (knowing one tells you nothing about the other)
+  \item $I(X; Y) > 0$: $X$ and $Y$ are dependent (knowing one reduces uncertainty about the other)
+  \item $I(X; Y) = H(X)$: $Y$ completely determines $X$
+\end{itemize}
+
+Mutual information is always non-negative: $I(X; Y) \geq 0$
+
+Unlike correlation, mutual information can detect any type of relationship, including nonlinear ones.
+\end{intuition}
+
+\newpage
+\section{Portfolio Theory Specifics}
+
+\subsection{Portfolio}
+
+\begin{definition}
+A \textbf{portfolio} is a collection of financial assets with associated weights $w_1, \ldots, w_N$ where:
+\begin{itemize}
+  \item $w_i$ = fraction of total capital invested in asset $i$
+  \item $\sum_{i=1}^{N} w_i = 1$ (all capital is allocated)
+  \item $w_i \geq 0$ if short-selling is not allowed
+\end{itemize}
+
+The portfolio is represented by a weight vector $\mathbf{w} = (w_1, \ldots, w_N)^T$.
+\end{definition}
+
+\subsection{Portfolio Return}
+
+\begin{definition}
+The \textbf{portfolio return} over a period is:
+$$r_p = \sum_{i=1}^{N} w_i r_i = \mathbf{w}^T \mathbf{r}$$
+
+where $r_i$ is the return of asset $i$.
+
+The \textbf{expected portfolio return} is:
+$$\mu_p = \mathbb{E}[r_p] = \sum_{i=1}^{N} w_i \mu_i = \mathbf{w}^T \boldsymbol{\mu}$$
+\end{definition}
+
+\begin{intuition}
+Portfolio return is simply the weighted average of individual asset returns. If you put 40\% in asset A (return 10\%) and 60\% in asset B (return 5\%), your portfolio return is:
+$$r_p = 0.4(10\%) + 0.6(5\%) = 7\%$$
+
+This follows from linearity: if you double your investment, you double your return.
+\end{intuition}
+
+\subsection{Portfolio Variance}
+
+\begin{definition}
+The \textbf{portfolio variance} is:
+$$\sigma_p^2 = \text{Var}(r_p) = \mathbf{w}^T \boldsymbol{\Sigma} \mathbf{w} = \sum_{i=1}^{N}\sum_{j=1}^{N} w_i w_j \sigma_{ij}$$
+
+where $\boldsymbol{\Sigma}$ is the covariance matrix with entries $\sigma_{ij} = \text{Cov}(r_i, r_j)$.
+
+The \textbf{portfolio volatility} (standard deviation) is:
+$$\sigma_p = \sqrt{\sigma_p^2}$$
+\end{definition}
+
+\begin{intuition}
+Unlike return, portfolio variance is NOT a simple weighted average of individual variances. It includes covariance terms:
+
+$$\sigma_p^2 = \underbrace{\sum_{i=1}^{N} w_i^2 \sigma_i^2}_{\text{individual variances}} + \underbrace{\sum_{i \neq j} w_i w_j \sigma_{ij}}_{\text{covariances}}$$
+
+This is why diversification works: if assets aren't perfectly correlated, the covariance terms reduce total risk.
+\end{intuition}
+
+\subsection{Sharpe Ratio}
+
+\begin{definition}
+The \textbf{Sharpe ratio} measures risk-adjusted return:
+$$\text{Sharpe} = \frac{\mu_p - r_f}{\sigma_p}$$
+
+where:
+\begin{itemize}
+  \item $\mu_p$ = expected portfolio return
+  \item $r_f$ = risk-free rate (e.g., Treasury bill rate)
+  \item $\sigma_p$ = portfolio volatility
+\end{itemize}
+\end{definition}
+
+\begin{intuition}
+Sharpe ratio = "excess return per unit of risk"
+
+Higher Sharpe ratio = better risk-adjusted performance
+
+Example:
+\begin{itemize}
+  \item Portfolio A: 12\% return, 20\% volatility, $r_f = 2\%$: Sharpe = $(12-2)/20 = 0.5$
+  \item Portfolio B: 8\% return, 10\% volatility, $r_f = 2\%$: Sharpe = $(8-2)/10 = 0.6$
+\end{itemize}
+
+Portfolio B is better on a risk-adjusted basis (higher return per unit of risk), even though A has higher absolute return.
+
+Typical values:
+\begin{itemize}
+  \item Sharpe $< 1$: Not great
+  \item Sharpe = 1 - 2: Good
+  \item Sharpe $> 2$: Excellent (rare in practice)
+\end{itemize}
+\end{intuition}
+
+\subsection{Efficient Frontier}
+
+\begin{definition}
+The \textbf{efficient frontier} is the set of portfolios that achieve:
+\begin{itemize}
+  \item Maximum expected return for each level of risk, OR
+  \item Minimum risk for each level of expected return
+\end{itemize}
+
+No portfolio below the frontier can dominate an efficient portfolio (provide more return for the same risk, or less risk for the same return).
+\end{definition}
+
+\begin{intuition}
+The efficient frontier is a curve in (risk, return) space. Portfolios on this curve are "Pareto optimal" - you can't improve one dimension without worsening the other.
+
+Any rational investor should choose a portfolio on the efficient frontier. The specific choice depends on risk tolerance:
+\begin{itemize}
+  \item Risk-averse: Choose low-risk portfolio on the frontier
+  \item Risk-tolerant: Choose high-return portfolio on the frontier
+\end{itemize}
+
+The tangent portfolio (highest Sharpe ratio) is often considered "optimal" for all investors who can borrow/lend at the risk-free rate.
+\end{intuition}
+
+\subsection{Risk Parity}
+
+\begin{definition}
+A \textbf{risk parity} portfolio allocates weights so that each asset contributes equally to total portfolio risk.
+
+The risk contribution of asset $i$ is:
+$$\text{RC}_i = w_i \frac{\partial \sigma_p}{\partial w_i} = w_i \frac{(\boldsymbol{\Sigma}\mathbf{w})_i}{\sigma_p}$$
+
+Risk parity requires: $\text{RC}_1 = \text{RC}_2 = \cdots = \text{RC}_N$
+\end{definition}
+
+\begin{intuition}
+Risk parity is different from equal weighting:
+\begin{itemize}
+  \item Equal weighting: $w_i = 1/N$ (same amount in each asset)
+  \item Risk parity: Weight inversely to risk (more in low-risk, less in high-risk)
+\end{itemize}
+
+Example: If asset A has volatility 10\% and asset B has volatility 30\%, risk parity puts 3× as much weight in A as in B, so they contribute equally to portfolio risk.
+
+HRP uses a hierarchical version of risk parity: at each split, allocate inversely to cluster risk.
+\end{intuition}
+
+\section{Conclusion}
+
+This mathematical dictionary covers all foundational concepts needed to understand HRP and modern portfolio theory. Each concept builds on previous ones:
+
+\textbf{Foundation:} Probability and statistics provide the language of uncertainty.
+
+\textbf{Structure:} Linear algebra provides tools for multi-dimensional analysis.
+
+\textbf{Optimization:} Optimization theory formalizes the decision problem.
+
+\textbf{Relationships:} Graph theory and metric spaces provide alternative representations.
+
+\textbf{Discovery:} Clustering algorithms find hidden structure in data.
+
+\textbf{Application:} Portfolio theory applies all these tools to financial decision-making.
+
+When you encounter an unfamiliar term in the HRP document, refer back to this dictionary for definitions, intuition, and examples. Mathematics is a language - and like any language, it becomes clearer with practice and reference.
+
+\end{document}

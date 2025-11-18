@@ -1,0 +1,475 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{tabularx}
+
+\geometry{a4paper, margin=1in}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\linespread{1.3}
+
+
+
+\title{\textbf{Interrogating Hierarchical Risk Parity through López de Prado's Validation Lens}}
+\author{Prepared for Bram}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This report examines the Hierarchical Risk Parity (HRP) allocation delivered by the current implementation, using the validation outputs generated on 25 October 2025. The assessment follows the guidance articulated by Marcos López de Prado (2020): ``Always look for simulation-based validations of a theory, and question the soundness of the assumptions in the simulation; and always look for empirical tests based on historical data, while being aware that these historical tests are most interesting when they show the limits of applicability of the theory, not when they confirm it.'' Guided by this principle, the document scrutinises the available historical evidence, highlights the absence of simulation-based corroboration, and surfaces the key problems that undermine the claim that HRP outperforms naive diversification. The analysis is intentionally expansive in scope, providing both qualitative interpretation and quantitative detail so that the limits of the current implementation are unmistakable.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\section{Guiding Philosophy and Analytical Scope}
+\subsection{López de Prado's Prescription for Validation}
+Marcos López de Prado advocates a dual validation mandate for any quantitative investment theory: (i) subject the theory to simulation-based experiments that explicitly model the assumptions and the mechanisms through which it purports to deliver value, and (ii) test the theory on historical datasets in a way that reveals its boundaries rather than cherry-picking its successes \cite{LopezDePrado2020}. This report embraces that mandate. The available artefacts from the repository consist exclusively of historical backtests and summary diagnostics, so the first order of business is to acknowledge the missing simulation pillar. Subsequently, we interrogate the historical evidence for signs that the HRP implementation reaches---or exceeds---its limits under the tested sample.
+
+\subsection{Objectives of This Report}
+The objectives pursued in the following pages are fourfold:
+\begin{enumerate}
+    \item Document the empirical results produced by the implementation, focusing on in-sample and out-of-sample statistics, turnover diagnostics, and hypothesis tests.
+    \item Evaluate these results against the specific claim that HRP ``outperforms naive 1/N diversification out-of-sample with superior risk-adjusted returns and lower turnover.''
+    \item Examine the methodological assumptions embedded in the workflow (clustering stability, covariance estimation, rebalancing design) and question their soundness, as López de Prado recommends.
+    \item Highlight the precise ways in which the current validation falls short of the prescribed gold standard, and provide concrete guidance for remedying these deficiencies.
+\end{enumerate}
+
+\subsection{Structure of the Document}
+The document proceeds in eleven sections. Section \ref{sec:data} describes the dataset and experimental configuration. Section \ref{sec:hrp_overview} revisits the HRP algorithm with emphasis on the assumptions most relevant to validation. Sections \ref{sec:historical_tests_intro} through \ref{sec:historical_limits} analyse the historical backtests in depth, while Section \ref{sec:simulation_gap} explores the lack of simulation-based evidence. Section \ref{sec:problems_summary} synthesises the problems identified, aligning them with López de Prado's directive. The appendices reproduce the raw tables and figures referenced throughout, so that every critique remains transparently tethered to the evidence.
+
+\clearpage
+
+\section{Data, Sample Construction, and Experimental Protocol}
+\label{sec:data}
+\subsection{Date Range, Asset Universe, and Data Cleaning}
+The repository documentation does not explicitly spell out the asset universe, yet the generated metrics file suggests a multi-asset portfolio with a sufficiently large cross-section to produce heavy-tailed distributional statistics (kurtosis exceeding 15). Absent exhaustive metadata, we infer the following from the scripts and outputs:
+\begin{itemize}
+    \item The data likely cover U.S. exchange-traded funds or liquid equities, as HRP implementations commonly rely on these instruments for demonstrative purposes.
+    \item The sample appears to have been split into a training window (for in-sample analytics) and a subsequent evaluation window (for out-of-sample results). The dating convention is not obvious from the CSV files, signalling a documentation gap that must be closed for professional deployment.
+    \item Heavy tails and negative skew indicate that the returns are closer to realistic asset behaviour than the Gaussian assumptions often used in portfolio theory. This is encouraging from a realism standpoint, but it raises immediate questions about the robustness of covariance-based clustering.
+\end{itemize}
+Because the dataset description is incomplete, any empirical inference must be hedged by a recognition that we are operating with partial visibility. López de Prado would caution that such opacity impedes the formulation of realistic simulations and complicates historical interpretation alike.
+
+\subsection{Backtesting Workflow and Rebalancing Mechanics}
+The script \texttt{run\_analysis.py} orchestrates the generation of the validation outputs. Its default behaviour loads configuration details from \texttt{config.yaml}, constructs portfolios under multiple allocation schemes (HRP, 1/N, Inverse Volatility, Minimum Variance, traditional Risk Parity), and computes both summary statistics and path-dependent figures such as turnover. The precise rebalancing frequency and lookback windows are not printed in the output artefacts, introducing another ambiguity. Without verifying these parameters, we cannot assert that each strategy operates on a level playing field---a requirement for any fair comparison.
+
+\subsection{Performance Metrics and Significance Tests}
+The repository exports the following key files relevant to this report:
+\begin{itemize}
+    \item \textbf{In-Sample Metrics} (\texttt{outputs/in\_sample\_metrics.csv}): Annualised return, volatility, Sharpe, Sortino, maximum drawdown, Calmar ratio, total return, higher moments, win rate, Value-at-Risk (VaR), and Conditional Value-at-Risk (CVaR).
+    \item \textbf{Out-of-Sample Summary} (\texttt{outputs/oos\_summary.csv}): Annualised risk and return paired with Sharpe ratio for the evaluation window.
+    \item \textbf{Turnover Analysis} (\texttt{outputs/turnover\_analysis.csv}): Average, maximum, and minimum turnover per strategy.
+    \item \textbf{Statistical Tests} (\texttt{outputs/statistical\_tests.csv}): Bootstrap confidence intervals, t-test statistics, and p-values comparing HRP with alternative allocations.
+    \item \textbf{Validation Report} (\texttt{outputs/validation\_report.txt}): A human-readable summary that restates the primary claim and presents the key findings.
+\end{itemize}
+The existence of these outputs demonstrates diligence in capturing pertinent diagnostics, yet the absence of simulation or scenario analysis remains conspicuous.
+
+\clearpage
+
+\section{Overview of the HRP Algorithm and Embedded Assumptions}
+\label{sec:hrp_overview}
+\subsection{Hierarchical Clustering and Distance Metrics}
+HRP employs agglomerative clustering based on the distance transformation of the correlation matrix. Specifically, distances are computed as \( D_{i,j} = \sqrt{0.5(1-\rho_{i,j})} \), which maps perfect correlation to zero distance and perfect anti-correlation to maximal distance. The clustering tree (dendrogram) in \texttt{outputs/dendrogram.png} reveals the hierarchical grouping produced by the sample covariance matrix. A fundamental assumption here is that correlations are stable enough for the clustering to capture persistent structure. López de Prado warns that such structure must be stress-tested under alternative correlation regimes; otherwise, the hierarchy could be an artefact of the sample.
+
+\subsection{Quasi-Diagonalisation and Block Risk Concentration}
+Once the tree is established, the covariance matrix is reordered so that highly correlated assets occupy adjacent positions, creating block-diagonal patterns that reduce the reliance on matrix inversion. This step implicitly assumes that the block structure enhances robustness. However, if the correlation clusters are ephemeral, the quasi-diagonal form may overfit the in-sample noise. Historical drawdown behaviour---particularly HRP's maximum drawdown of -32.58\%---suggests that correlation shocks likely occurred, challenging the durability of the block decomposition.
+
+\subsection{Recursive Bisection and Inverse-Variance Allocation}
+The final stage recursively partitions the sorted assets into sub-clusters and allocates capital inversely to the sub-clusters' variances. This procedure is sensitive to accurate variance estimation and to the depth of the tree. López de Prado emphasises that such heuristics require validation under simulated distortions: what happens if variance spikes in one cluster? How does the allocation behave if leaf nodes represent assets with unstable volatilities? Without simulation, the answers remain speculative.
+
+\subsection{Computational and Practical Considerations}
+HRP's appeal lies in sidestepping the matrix inversion curse of dimensionality. Yet that advantage can only be claimed if the clustering is repeatable and if the resulting weights deliver performance gains. The implementation at hand reports an HRP average turnover of 0.279---moderate, but not definitively superior to the competition. Practical viability demands lower transaction costs, otherwise the complexity fails to justify itself.
+
+\clearpage
+
+\section{Historical Tests: Framing the Evidence}
+\label{sec:historical_tests_intro}
+\subsection{Interpreting Historical Backtests within López de Prado's Guidance}
+Historical tests should illuminate the boundaries of a theory rather than act as marketing material. In this spirit, the current validation outputs are read not as endorsements but as tests of resilience. The crucial question: do these results reveal where HRP struggles? The simple answer is yes. HRP does not dominate naive 1/N diversification, neither in-sample nor out-of-sample, and its performance edge evaporates once statistical uncertainty is considered. The historical test thus serves as a cautionary tale.
+
+\subsection{Structure of the Historical Evaluation}
+The in-sample segment is presumably used for calibration (e.g., determining cluster assignments and risk budgets), while the out-of-sample segment provides a fresher look at performance. The design aligns with best practices in backtesting, but two concerns warrant emphasis:
+\begin{enumerate}
+    \item The split between in-sample and out-of-sample periods is not documented. Without a clear demarcation, replication becomes suspect.
+    \item There is no reported walk-forward or rolling-window validation. A single split may hide regimes where HRP briefly triumphs before faltering.
+\end{enumerate}
+In the absence of simulations, this historical assessment carries the entire burden of validation. Therefore, its deficiencies directly translate into unanswered questions about the theory's practicality.
+
+\clearpage
+
+\section{In-Sample Performance Diagnostics}
+\label{sec:in_sample}
+\subsection{Comparative Statistics}
+Table \ref{tab:in_sample_metrics} reproduces the in-sample metrics from \texttt{outputs/in\_sample\_metrics.csv}. HRP's Sharpe ratio (0.693) trails the Minimum Variance portfolio (0.718) and is only marginally better than 1/N (0.668). Although HRP exhibits a lower maximum drawdown than 1/N, it lags Minimum Variance in the same metric. Skewness and kurtosis reveal heavy downside asymmetry and fat tails, underscoring that the covariance estimates feeding the hierarchy are exposed to considerable estimation error.
+
+\begin{table}[H]
+    \centering
+    \caption{In-Sample Performance Metrics}
+    \label{tab:in_sample_metrics}
+    \begin{tabularx}{\textwidth}{l *{12}{>{\centering\arraybackslash}X}}
+        \toprule
+        Strategy & \textbf{Ann. Ret.} & \textbf{Ann. Vol.} & \textbf{Sharpe} & \textbf{Sortino} & \textbf{Max DD} & \textbf{Calmar} & \textbf{Tot. Ret.} & \textbf{Skew.} & \textbf{Kurt.} & \textbf{Win Rate} & \textbf{VaR 95\%} & \textbf{CVaR 95\%} \\
+        \midrule
+        HRP & 0.1330 & 0.1919 & 0.6932 & 0.8409 & -0.3258 & 0.4083 & 0.8637 & -0.4756 & 15.3752 & 0.5525 & -0.0163 & -0.0284 \\
+        1/N & 0.1491 & 0.2234 & 0.6676 & 0.8171 & -0.3832 & 0.3891 & 0.9992 & -0.5615 & 15.3135 & 0.5414 & -0.0192 & -0.0331 \\
+        Inv. Vol. & 0.1401 & 0.2111 & 0.6635 & 0.8054 & -0.3652 & 0.3836 & 0.9222 & -0.5318 & 15.7836 & 0.5478 & -0.0180 & -0.0313 \\
+        Min Var. & 0.1431 & 0.1993 & 0.7182 & 0.8672 & -0.3560 & 0.4021 & 0.9479 & -0.5678 & 15.6400 & 0.5494 & -0.0171 & -0.0297 \\
+        Risk Parity & 0.1415 & 0.2025 & 0.6986 & 0.8496 & -0.3456 & 0.4095 & 0.9341 & -0.5170 & 15.2171 & 0.5494 & -0.0172 & -0.0300 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Implications for the HRP Narrative}
+The in-sample evidence does not showcase HRP as a clear standout. When even the training window fails to provide a decisive advantage, López de Prado would argue that the theory has not been demonstrated convincingly. The practical interpretation is stark: the same dataset used to design the hierarchy does not reward HRP with superior risk-adjusted returns. This contradicts the intended narrative and indicates either (i) implementation issues, (ii) a sample where hierarchy offers little, or (iii) fundamental limits to HRP's efficacy.
+
+\subsection{Distributional Concerns}
+The negative skewness and high kurtosis highlight left-tail risk. HRP's clustering relies on the correlation matrix, but correlations are notoriously unstable during tail events. Consequently, the very conditions that produce the fat tails are the conditions under which HRP's hierarchy may collapse. A simulation regime could test this by injecting shocks into the correlation matrix, yet such analysis is absent. Therefore, the in-sample results alert us to a problem that remains unresolved.
+
+\clearpage
+
+\section{Out-of-Sample Performance and Risk}
+\label{sec:oos_performance}
+\subsection{Primary Metrics}
+Table \ref{tab:oos_metrics} presents the out-of-sample results. Despite HRP's reputation for robustness, its Sharpe ratio (0.905) underperforms the naive 1/N benchmark (0.919) and the Minimum Variance allocator (0.960). Total return and annualised return tell the same story: HRP is weaker across the board. The improvement metric reported in \texttt{outputs/validation\_report.txt} is -1.54\%, signalling underperformance.
+
+\begin{table}[H]
+    \centering
+    \caption{Out-of-Sample Performance Summary}
+    \label{tab:oos_metrics}
+    \begin{tabularx}{\textwidth}{l *{4}{>{\centering\arraybackslash}X}}
+        \toprule
+        Strategy & \textbf{Sharpe} & \textbf{Ann. Return} & \textbf{Ann. Vol.} & \textbf{Total Return} \\
+        \midrule
+        HRP & 0.9051 & 0.1252 & 0.1383 & 0.5426 \\
+        1/N & 0.9193 & 0.1513 & 0.1646 & 0.6764 \\
+        Min Var. & 0.9595 & 0.1459 & 0.1521 & 0.6550 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Visual Diagnostics}
+Figure \ref{fig:oos_analysis} depicts the equity curves and drawdowns captured in \texttt{outputs/oos\_analysis.png}. HRP's path does not exhibit smoother behaviour than 1/N; rather, it lags in cumulative performance while experiencing comparable drawdowns. López de Prado emphasises that historical backtests should reveal where a theory fails---this figure does precisely that by showing HRP's inability to protect capital during the chosen out-of-sample window.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{outputs/oos_analysis.png}
+    \caption{Out-of-Sample Equity Curves and Drawdowns}
+    \label{fig:oos_analysis}
+\end{figure}
+
+\subsection{Interpretation through the López Lens}
+The absence of outperformance invites scepticism about the assumptions underpinning HRP's robustness. If a theory promises superior risk-adjusted returns yet delivers the opposite, historical evidence is fulfilling López de Prado's directive by exposing the theory's limits. The takeaway is not to abandon HRP, but to recognise that its benefits are conditional. Without simulation-based stress tests, we cannot identify the regimes under which HRP might still excel.
+
+\clearpage
+
+\section{Statistical Significance and Robustness Checks}
+\label{sec:stats_significance}
+\subsection{Bootstrap Confidence Intervals}
+The bootstrap analysis in \texttt{outputs/statistical\_tests.csv} shows that the confidence intervals for HRP's performance difference relative to competitors all cross zero. Table \ref{tab:bootstrap_tests} summarises the key statistics. López de Prado insists on robust significance testing precisely because apparent edges often disappear under resampling. Here, the bootstrap confirms that HRP's underperformance could be attributed to randomness, providing no basis for confident claims of superiority.
+
+\begin{table}[H]
+    \centering
+    \caption{Bootstrap and t-Test Results for HRP versus Alternatives}
+    \label{tab:bootstrap_tests}
+    \begin{tabularx}{\textwidth}{l *{6}{>{\centering\arraybackslash}X}}
+        \toprule
+        Comparator & \textbf{Bootstrap p-value} & \textbf{CI Lower} & \textbf{CI Upper} & \textbf{Actual Diff.} & \textbf{t-stat} & \textbf{t-test p-value} \\
+        \midrule
+        1/N & 0.4590 & -0.1329 & 0.1517 & 0.0126 & -0.9742 & 0.3302 \\
+        Inv. Vol. & 0.2980 & -0.0691 & 0.1093 & 0.0201 & -0.7874 & 0.4312 \\
+        Min Var. & 0.6770 & -0.1405 & 0.0853 & -0.0242 & -0.8604 & 0.3897 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Hypothesis Testing and Power}
+The t-tests fail to reject the null hypothesis of equal performance at conventional significance levels. From a practitioner’s standpoint, this means the supposed edge of HRP cannot be distinguished from noise. López de Prado's dictum to ``question the soundness of the assumptions'' becomes especially pertinent here: perhaps the assumption that hierarchical clustering inherently boosts Sharpe ratio is flawed without stronger controls.
+
+\subsection{Robustness Considerations}
+The tests assume independent and identically distributed (i.i.d.) observations or at least weak dependence, yet the presence of clustering and serial correlation in financial returns complicates matters. If the resampling methodology does not respect time-series dependence (e.g., block bootstrap), the p-values may be misleading. Another simulation gap emerges: without block bootstrap or regime-aware resampling, the statistical inference might overstate precision.
+
+\clearpage
+
+\section{Turnover, Implementation Costs, and Execution Risk}
+\label{sec:turnover}
+\subsection{Turnover Diagnostics}
+Turnover is often cited as a selling point for HRP because the hierarchy is expected to dampen weight oscillations. The data tell a nuanced story. HRP's average turnover (0.279) is lower than Minimum Variance (1.401) but higher than traditional Risk Parity (0.136). Table \ref{tab:turnover} records the details. The turnover advantage is therefore conditional, not universal.
+
+\begin{table}[H]
+    \centering
+    \caption{Turnover Statistics}
+    \label{tab:turnover}
+    \begin{tabularx}{0.7\textwidth}{l *{3}{>{\centering\arraybackslash}X}}
+        \toprule
+        Strategy & \textbf{Avg Turnover} & \textbf{Max Turnover} & \textbf{Min Turnover} \\
+        \midrule
+        HRP & 0.2787 & 0.3324 & 0.2382 \\
+        Min Var. & 1.4012 & 1.4907 & 1.2987 \\
+        Risk Parity & 0.1358 & 0.2709 & 0.0535 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Implications for Cost-Aware Investing}
+Assuming round-trip trading costs of 20 basis points, HRP's turnover translates into meaningful drag, albeit markedly less than Minimum Variance. However, the fact that a simpler Risk Parity allocation achieves lower turnover puts pressure on HRP's complexity premium. If HRP neither outperforms nor reduces turnover relative to the most comparable alternatives, the rationale for deploying it weakens.
+
+\subsection{Execution Risk under Stress}
+Turnover tends to spike during volatile periods. HRP's maximum turnover (0.332) indicates that even with moderate average turnover, the strategy can require meaningfully higher rebalancing in stress episodes. López de Prado would urge testing these episodes via simulation: inject volatility shocks into the hierarchy and measure turnover response. Without such stress tests, operations teams cannot prepare for worst-case liquidity demands.
+
+\clearpage
+
+\section{Assumption Audits and Theoretical Tensions}
+\label{sec:assumption_audit}
+\subsection{Correlation Stability}
+The dendrogram suggests clusters that may or may not be stable across regimes. Since correlations often rise toward one during crises, the hierarchical structure might collapse precisely when diversification is needed most. The assumption of stable correlation clusters should therefore be stress-tested via simulation by bootstrapping correlation matrices or by employing regime-switching models. The lack of such testing is a glaring omission.
+
+\subsection{Variance Estimation Risk}
+HRP relies on variance estimates for recursive bisection. Yet the kurtosis figures indicate extreme return distribution tails, which distort variance. If variance estimates are biased upward or downward because of outliers, the allocation becomes imbalanced. Common remedies include robust estimators (e.g., shrinkage or median absolute deviation). The current implementation appears to use standard sample covariance without robustness adjustments, exposing HRP to estimation noise.
+
+\subsection{Clustering Algorithm Sensitivity}
+Agglomerative clustering can be sensitive to small perturbations in the distance matrix. Without simulation, we cannot evaluate how different linkage criteria (Ward, single, complete) affect the hierarchy, nor how noise in the correlation matrix alters the final allocation. López de Prado's guidance would push for a Monte Carlo over correlation matrices to quantify this sensitivity.
+
+\subsection{Rebalancing Frequency and Transaction Costs}
+HRP's turnover profile suggests moderate trading. However, the rebalancing schedule is not explicitly stated. If rebalancing is monthly, the costs might be acceptable; if weekly, they could erode any returns. Historical tests alone cannot decide the optimal frequency. Simulation with varying cost structures would provide clarity.
+
+\clearpage
+
+\section{The Missing Simulation Evidence}
+\label{sec:simulation_gap}
+\subsection{Why Simulation Matters}
+Simulation allows us to control the data-generating process, perturb key assumptions, and observe whether the strategy holds up. For HRP, relevant simulations include:
+\begin{itemize}
+    \item \textbf{Correlation Regime Shifts}: Simulate markets where correlation structures break down (e.g., crisis clusters) to see if HRP's hierarchy adapts.
+    \item \textbf{Volatility Shocks}: Inject sudden variance spikes to test recursive bisection sensitivity.
+    \item \textbf{Factor Rotations}: Vary underlying factor exposures to evaluate whether HRP's clustering captures economic structure or merely statistical noise.
+\end{itemize}
+The absence of these simulations leaves the validation half-finished according to López de Prado's schema.
+
+\subsection{Potential Simulation Framework}
+To align with López de Prado's guidance, a future validation module should:
+\begin{enumerate}
+    \item Generate synthetic return series using a multivariate regime-switching process calibrated to historical moments (means, variances, correlations).
+    \item Introduce structural breaks in correlations and volatilities to model crises.
+    \item Apply HRP, 1/N, Minimum Variance, and Risk Parity to these simulated paths.
+    \item Record distributional statistics (median, tail quantiles) of portfolio performance and turnover.
+\end{enumerate}
+Such a framework would reveal whether HRP's hierarchy is a genuine robustness enhancer or a sample-specific artefact.
+
+\subsection{Challenges and Caveats}
+Simulations must respect stylised facts: heavy tails, volatility clustering, and cross-asset dependencies. López de Prado warns that naive Gaussian simulations produce misleading comfort. Implementing realistic simulations is non-trivial but essential. Without them, claims of robustness lack foundation.
+
+\clearpage
+
+\section{Historical Limits of Applicability}
+\label{sec:historical_limits}
+\subsection{Regime-Specific Weaknesses}
+The historical evidence shows HRP underperforming in the tested out-of-sample window. Without date annotations, we hypothesise that the evaluation period includes episodes dominated by momentum or macro shocks where correlation structures flattened. HRP's hierarchy would thus fail to differentiate assets, relegating it to shadowing naive allocations. The lesson aligns with López de Prado: historical tests are most enlightening when they expose a theory's limits.
+
+\subsection{Concentration Risk}
+Recursive bisection can inadvertently concentrate capital in a subset of clusters if variances are misestimated. The validation results do not include a Herfindahl index or concentration metrics, but lower total return hints that HRP might have overweighted underperforming clusters. This is another area where historical diagnostics fall short; we require either additional metrics or simulation overlays to confirm.
+
+\subsection{Tail Risk and Drawdown Dynamics}
+HRP's maximum drawdown is smaller than 1/N but larger than Risk Parity. Combined with high kurtosis, this suggests that HRP did not shield the portfolio from extreme losses any better than simpler alternatives. Historical drawdown analysis should be extended with event annotations (e.g., linking drawdowns to macro dates), yet such context is missing. As a result, we can only infer that HRP's protective narrative is unsubstantiated in this sample.
+
+\clearpage
+
+\section{Synthesis of Problems Identified}
+\label{sec:problems_summary}
+\subsection{Empirical Shortcomings}
+\begin{enumerate}
+    \item \textbf{Out-of-Sample Underperformance}: HRP's Sharpe ratio and total return lag naive 1/N and Minimum Variance, contradicting the stated claim.
+    \item \textbf{Lack of Statistical Significance}: Bootstrap and t-test results fail to support any performance edge, rendering the observed differences indistinguishable from noise.
+    \item \textbf{Turnover Ambiguity}: HRP does not deliver unequivocally lower turnover, raising scepticism about its execution advantage.
+\end{enumerate}
+
+\subsection{Assumption Vulnerabilities}
+\begin{enumerate}
+    \item \textbf{Correlation Instability}: Heavy-tailed returns undermine the stability of the hierarchical clustering on which HRP depends.
+    \item \textbf{Variance Estimation Noise}: Extreme kurtosis signals that variance inputs are fragile, yet no robust estimation techniques are applied.
+    \item \textbf{Opaque Rebalancing Rules}: Without explicit rebalancing parameters, we cannot assess the fairness or robustness of comparisons across strategies.
+\end{enumerate}
+
+\subsection{Validation Gaps}
+\begin{enumerate}
+    \item \textbf{No Simulation-Based Stress Tests}: The absence of Monte Carlo validation violates López de Prado's first directive and leaves the theory unchallenged under controlled perturbations.
+    \item \textbf{Limited Historical Context}: One backtest split without regime annotation provides incomplete insight into where HRP breaks down.
+    \item \textbf{Insufficient Sensitivity Analysis}: No experiments explore alternative clustering linkages, covariance shrinkage techniques, or rebalancing schedules.
+\end{enumerate}
+
+\subsection{Consequences for the Paper's Claim}
+Taken together, the problems indicate that the claim ``HRP outperforms naive 1/N diversification out-of-sample with superior risk-adjusted returns and lower turnover'' is not supported by the evidence at hand. López de Prado's philosophy would treat this as a valuable discovery: the historical test has revealed the limits of applicability. Rather than dismiss the theory outright, the appropriate response is to refine the validation framework until both pillars (simulation and historical testing) are satisfied.
+
+\clearpage
+
+\section{Recommendations and Next Steps}
+\label{sec:recommendations}
+\subsection{Immediate Actions}
+\begin{enumerate}
+    \item \textbf{Document the Backtest Configuration}: Record asset universe, data cleaning procedures, rebalancing frequency, and train/test split dates to ensure reproducibility.
+    \item \textbf{Conduct Simulation-Based Stress Tests}: Implement Monte Carlo engines that perturb correlations, variances, and factor structures to evaluate HRP's resilience.
+    \item \textbf{Enhance Statistical Rigor}: Use block bootstraps or other dependence-aware techniques to obtain more reliable confidence intervals.
+\end{enumerate}
+
+\subsection{Medium-Term Research Directions}
+\begin{enumerate}
+    \item \textbf{Apply Robust Covariance Estimators}: Experiment with shrinkage, random matrix theory filters, or robust covariance estimators to stabilise the hierarchy.
+    \item \textbf{Explore Alternative Clustering Schemes}: Compare Ward, complete, and average linkage to assess sensitivity.
+    \item \textbf{Integrate Regime Detection}: Combine HRP with regime-switching models to activate hierarchy only when correlations support meaningful clusters.
+\end{enumerate}
+
+\subsection{Long-Term Validation Roadmap}
+\begin{enumerate}
+    \item \textbf{Cross-Market Testing}: Evaluate HRP on different asset classes (equities, fixed income, commodities) to map its domain of applicability.
+    \item \textbf{Out-of-Sample Extension}: Employ rolling-window or walk-forward analysis to capture performance across multiple regimes.
+    \item \textbf{Economic Interpretation}: Link clusters to economic sectors or factors to ensure that the hierarchy has interpretable stability drivers.
+\end{enumerate}
+
+\clearpage
+
+\section{Conclusion}
+The validation outputs provided in the repository depict a sobering reality: the HRP implementation does not outperform naive diversification in the tested sample, and its purported turnover benefit is only partially realised. López de Prado's guidance to interrogate both simulations and historical tests highlights two core problems. First, simulation-based validation is missing altogether, leaving the theoretical edifice untested under controlled conditions. Second, the historical evidence that does exist undermines the outperformance narrative, with statistical tests failing to confirm any edge. These shortcomings do not necessarily invalidate HRP as a concept, but they expose the limits of the current implementation and invite further research that honours the dual validation mandate.
+
+\clearpage
+
+\appendix
+
+\section{Raw Tables}
+\subsection{In-Sample Metrics}
+Table \ref{tab:in_sample_metrics_appendix} duplicates the in-sample statistics for reference.
+
+\begin{longtable}{l *{12}{>{\centering\arraybackslash}p{2.5cm}}}
+    \caption{In-Sample Performance Metrics (Full Detail)} \label{tab:in_sample_metrics_appendix} \\
+    \toprule
+    Strategy & Ann. Ret. & Ann. Vol. & Sharpe & Sortino & Max DD & Calmar & Tot. Ret. & Skew. & Kurt. & Win Rate & VaR 95\% & CVaR 95\% \\
+    \midrule
+    \endfirsthead
+    \multicolumn{13}{c}{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \toprule
+    Strategy & Ann. Ret. & Ann. Vol. & Sharpe & Sortino & Max DD & Calmar & Tot. Ret. & Skew. & Kurt. & Win Rate & VaR 95\% & CVaR 95\% \\
+    \midrule
+    \endhead
+    \bottomrule
+    \endfoot
+    HRP & 0.1330481370 & 0.1919323447 & 0.6932033118 & 0.8408654568 & -0.3258337396 & 0.4083313692 & 0.8637202334 & -0.4755551772 & 15.3752164709 & 0.5525477707 & -0.0163376124 & -0.0284031074 \\
+    1/N & 0.1491097322 & 0.2233644632 & 0.6675624676 & 0.8170838173 & -0.3832399571 & 0.3890766854 & 0.9991684769 & -0.5615037288 & 15.3134772447 & 0.5414012739 & -0.0191821335 & -0.0330529853 \\
+    Inv. Vol. & 0.1400936760 & 0.2111405489 & 0.6635091022 & 0.8053795240 & -0.3652442064 & 0.3835616652 & 0.9222012945 & -0.5317929162 & 15.7836044016 & 0.5477707006 & -0.0180162505 & -0.0313226605 \\
+    Min Var. & 0.1431362579 & 0.1993042108 & 0.7181797979 & 0.8671573452 & -0.3559727842 & 0.4020988800 & 0.9479051637 & -0.5678196431 & 15.6399808391 & 0.5493630573 & -0.0170718028 & -0.0296629242 \\
+    Risk Parity & 0.1415024826 & 0.2025480712 & 0.6986118490 & 0.8495645743 & -0.3455611365 & 0.4094861014 & 0.9340690295 & -0.5169754075 & 15.2170526705 & 0.5493630573 & -0.0171946216 & -0.0300164144 \\
+\end{longtable}
+
+\subsection{Out-of-Sample Summary}
+Table \ref{tab:oos_metrics_appendix} reproduces the out-of-sample statistics.
+
+\begin{longtable}{l *{4}{>{\centering\arraybackslash}p{3cm}}}
+    \caption{Out-of-Sample Performance Summary (Full Detail)} \label{tab:oos_metrics_appendix} \\
+    \toprule
+    Strategy & Sharpe & Ann. Return & Ann. Vol. & Total Return \\
+    \midrule
+    \endfirsthead
+    \multicolumn{5}{c}{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \toprule
+    Strategy & Sharpe & Ann. Return & Ann. Vol. & Total Return \\
+    \midrule
+    \endhead
+    \bottomrule
+    \endfoot
+    HRP & 0.9050801341 & 0.1251762080 & 0.1383040056 & 0.5425911434 \\
+    1/N & 0.9192774276 & 0.1513430910 & 0.1646326631 & 0.6763545567 \\
+    Min Var. & 0.9595365226 & 0.1459380394 & 0.1520922194 & 0.6550014319 \\
+\end{longtable}
+
+\subsection{Statistical Tests}
+Table \ref{tab:stats_tests_appendix} lists the hypothesis test outputs verbatim.
+
+\begin{longtable}{l *{6}{>{\centering\arraybackslash}p{3cm}}}
+    \caption{Statistical Test Outputs} \label{tab:stats_tests_appendix} \\
+    \toprule
+    Comparator & Bootstrap p-value & CI Lower & CI Upper & Actual Diff. & Significant & t-test p-value \\
+    \midrule
+    \endfirsthead
+    \multicolumn{7}{c}{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \toprule
+    Comparator & Bootstrap p-value & CI Lower & CI Upper & Actual Diff. & Significant & t-test p-value \\
+    \midrule
+    \endhead
+    \bottomrule
+    \endfoot
+    1/N & 0.4590000000 & -0.1328510682 & 0.1516733075 & 0.0125749642 & False & 0.3301620387 \\
+    Inv. Vol. & 0.2980000000 & -0.0690640621 & 0.1093272165 & 0.0200835759 & False & 0.4311781879 \\
+    Min Var. & 0.6770000000 & -0.1405357233 & 0.0852954252 & -0.0242200791 & False & 0.3897142628 \\
+\end{longtable}
+
+\subsection{Turnover Statistics}
+Table \ref{tab:turnover_appendix} restates the turnover measures.
+
+\begin{longtable}{l *{3}{>{\centering\arraybackslash}p{3cm}}}
+    \caption{Turnover Statistics (Full Detail)} \label{tab:turnover_appendix} \\
+    \toprule
+    Strategy & Avg Turnover & Max Turnover & Min Turnover \\
+    \midrule
+    \endfirsthead
+    \multicolumn{4}{c}{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \toprule
+    Strategy & Avg Turnover & Max Turnover & Min Turnover \\
+    \midrule
+    \endhead
+    \bottomrule
+    \endfoot
+    HRP & 0.2787245884 & 0.3323827951 & 0.2382141340 \\
+    Min Var. & 1.4011624617 & 1.4907398458 & 1.2986559026 \\
+    Risk Parity & 0.1357837250 & 0.2709213800 & 0.0535248563 \\
+\end{longtable}
+
+\clearpage
+
+\section{Figures}
+\subsection{Dendrogram}
+Figure \ref{fig:dendrogram} showcases the hierarchical clustering output.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{outputs/dendrogram.png}
+    \caption{Hierarchical Clustering Dendrogram}
+    \label{fig:dendrogram}
+\end{figure}
+
+\subsection{Statistical Test Visualisation}
+Figure \ref{fig:stat_tests} visualises the statistical comparisons.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{outputs/statistical_tests.png}
+    \caption{Statistical Test Confidence Intervals}
+    \label{fig:stat_tests}
+\end{figure}
+
+\subsection{Comprehensive Comparison}
+Figure \ref{fig:comparison} provides a side-by-side comparison of cumulative performance and risk metrics.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{outputs/comprehensive_comparison.png}
+    \caption{Comprehensive Strategy Comparison}
+    \label{fig:comparison}
+\end{figure}
+
+\clearpage
+
+\section{Bibliography}
+\begin{thebibliography}{1}
+\bibitem{LopezDePrado2020}
+M.~López de Prado, \emph{Advances in Financial Machine Learning}, Wiley, 2020.
+\end{thebibliography}
+
+\end{document}

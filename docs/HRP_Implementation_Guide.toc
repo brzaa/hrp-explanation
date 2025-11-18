@@ -1,0 +1,53 @@
+\contentsline {section}{\numberline {1}Overview and Setup}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}What You'll Build}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Prerequisites}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Code Structure}{2}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Part 1: Data Generation}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Purpose}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}The Code}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Mathematical Connection}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Usage Example}{4}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Part 2: HRP Step 1 - Tree Clustering}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Mathematical Background}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Converting Correlation to Distance}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Hierarchical Clustering}{5}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Getting Asset Ordering}{6}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Part 3: HRP Step 2 - Quasi-Diagonalization}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Purpose}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}The Code}{7}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Mathematical Interpretation}{7}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Visual Comparison}{7}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Part 4: HRP Step 3 - Recursive Bisection}{8}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The Algorithm}{8}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Computing Cluster Variance}{8}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Recursive Bisection Implementation}{9}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Mathematical Insight}{9}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Part 5: Complete HRP Algorithm}{11}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Usage}{11}{subsection.6.1}%
+\contentsline {section}{\numberline {7}Part 6: Comparison Methods}{13}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Equal Weight (1/N)}{13}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Inverse Variance Portfolio (IVP)}{13}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Minimum Variance (Markowitz)}{13}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Part 7: Performance Analysis}{15}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Computing Portfolio Metrics}{15}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Comparing All Methods}{15}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Typical Results}{16}{subsection.8.3}%
+\contentsline {section}{\numberline {9}Part 8: Visualization}{17}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Dendrogram}{17}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Correlation Matrices}{17}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Weight Comparison}{17}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Cumulative Returns}{18}{subsection.9.4}%
+\contentsline {section}{\numberline {10}Part 9: Running the Complete Example}{19}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Main Function}{19}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Expected Output}{19}{subsection.10.2}%
+\contentsline {section}{\numberline {11}Advanced Topics and Extensions}{21}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Out-of-Sample Testing}{21}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Transaction Costs}{21}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Incorporating Expected Returns}{22}{subsection.11.3}%
+\contentsline {section}{\numberline {12}Practical Tips and Troubleshooting}{23}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Common Issues}{23}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Best Practices}{23}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}When to Use HRP}{24}{subsection.12.3}%
+\contentsline {section}{\numberline {13}Complete Code Listing}{25}{section.13}%
+\contentsline {section}{\numberline {14}Next Steps}{25}{section.14}%
+\contentsline {section}{\numberline {15}Conclusion}{26}{section.15}%

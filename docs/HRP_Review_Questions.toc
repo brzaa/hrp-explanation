@@ -1,0 +1,43 @@
+\contentsline {section}{\numberline {1}Part I: Foundations - Portfolio Theory Basics}{3}{}%
+\contentsline {subsection}{\numberline {1.1}Level 1: Foundational Questions}{3}{}%
+\contentsline {subsection}{\numberline {1.2}Level 2: Conceptual Understanding}{3}{}%
+\contentsline {subsection}{\numberline {1.3}Level 3: Mathematical Derivations}{3}{}%
+\contentsline {subsection}{\numberline {1.4}Level 4: Applied Problems}{4}{}%
+\contentsline {subsection}{\numberline {1.5}Level 5: Synthesis and Critical Thinking}{4}{}%
+\contentsline {section}{\numberline {2}Part II: Markowitz Optimization}{5}{}%
+\contentsline {subsection}{\numberline {2.1}Level 1: Foundational Questions}{5}{}%
+\contentsline {subsection}{\numberline {2.2}Level 2: Conceptual Understanding}{5}{}%
+\contentsline {subsection}{\numberline {2.3}Level 3: Mathematical Derivations}{5}{}%
+\contentsline {subsection}{\numberline {2.4}Level 4: Applied Problems}{6}{}%
+\contentsline {subsection}{\numberline {2.5}Level 5: Synthesis and Critical Thinking}{6}{}%
+\contentsline {section}{\numberline {3}Part III: The Problems with Classical Optimization}{7}{}%
+\contentsline {subsection}{\numberline {3.1}Level 1: Foundational Questions}{7}{}%
+\contentsline {subsection}{\numberline {3.2}Level 2: Conceptual Understanding}{7}{}%
+\contentsline {subsection}{\numberline {3.3}Level 3: Mathematical Derivations}{7}{}%
+\contentsline {subsection}{\numberline {3.4}Level 4: Applied Problems}{8}{}%
+\contentsline {subsection}{\numberline {3.5}Level 5: Synthesis and Critical Thinking}{8}{}%
+\contentsline {section}{\numberline {4}Part IV: Mathematical Prerequisites for HRP}{9}{}%
+\contentsline {subsection}{\numberline {4.1}Level 1: Foundational Questions}{9}{}%
+\contentsline {subsection}{\numberline {4.2}Level 2: Conceptual Understanding}{9}{}%
+\contentsline {subsection}{\numberline {4.3}Level 3: Mathematical Derivations}{9}{}%
+\contentsline {subsection}{\numberline {4.4}Level 4: Applied Problems}{10}{}%
+\contentsline {subsection}{\numberline {4.5}Level 5: Synthesis and Critical Thinking}{10}{}%
+\contentsline {section}{\numberline {5}Part V: The HRP Algorithm}{11}{}%
+\contentsline {subsection}{\numberline {5.1}Level 1: Foundational Questions}{11}{}%
+\contentsline {subsection}{\numberline {5.2}Level 2: Conceptual Understanding}{11}{}%
+\contentsline {subsection}{\numberline {5.3}Level 3: Mathematical Derivations}{11}{}%
+\contentsline {subsection}{\numberline {5.4}Level 4: Applied Problems}{12}{}%
+\contentsline {subsection}{\numberline {5.5}Level 5: Synthesis and Critical Thinking}{12}{}%
+\contentsline {section}{\numberline {6}Part VI: Performance Analysis and Comparisons}{13}{}%
+\contentsline {subsection}{\numberline {6.1}Level 1: Foundational Questions}{13}{}%
+\contentsline {subsection}{\numberline {6.2}Level 2: Conceptual Understanding}{13}{}%
+\contentsline {subsection}{\numberline {6.3}Level 3: Mathematical Analysis}{13}{}%
+\contentsline {subsection}{\numberline {6.4}Level 4: Applied Problems}{14}{}%
+\contentsline {subsection}{\numberline {6.5}Level 5: Synthesis and Critical Thinking}{14}{}%
+\contentsline {section}{\numberline {7}Part VII: The Bigger Picture}{15}{}%
+\contentsline {subsection}{\numberline {7.1}Level 1: Foundational Questions}{15}{}%
+\contentsline {subsection}{\numberline {7.2}Level 2: Conceptual Understanding}{15}{}%
+\contentsline {subsection}{\numberline {7.3}Level 3: Synthesis and Critical Thinking}{15}{}%
+\contentsline {subsection}{\numberline {7.4}Level 4: Integration Across Topics}{16}{}%
+\contentsline {section}{\numberline {8}Comprehensive Challenge Problems}{17}{}%
+\contentsline {section}{\numberline {9}Self-Assessment Rubric}{19}{}%
