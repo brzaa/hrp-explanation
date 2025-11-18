@@ -35,31 +35,43 @@
 \contentsline {subsection}{\numberline {9.2}Variance Estimation Risk}{18}{subsection.9.2}%
 \contentsline {subsection}{\numberline {9.3}Clustering Algorithm Sensitivity}{18}{subsection.9.3}%
 \contentsline {subsection}{\numberline {9.4}Rebalancing Frequency and Transaction Costs}{18}{subsection.9.4}%
-\contentsline {section}{\numberline {10}The Missing Simulation Evidence}{19}{section.10}%
-\contentsline {subsection}{\numberline {10.1}Why Simulation Matters}{19}{subsection.10.1}%
-\contentsline {subsection}{\numberline {10.2}Potential Simulation Framework}{19}{subsection.10.2}%
-\contentsline {subsection}{\numberline {10.3}Challenges and Caveats}{19}{subsection.10.3}%
-\contentsline {section}{\numberline {11}Historical Limits of Applicability}{21}{section.11}%
-\contentsline {subsection}{\numberline {11.1}Regime-Specific Weaknesses}{21}{subsection.11.1}%
-\contentsline {subsection}{\numberline {11.2}Concentration Risk}{21}{subsection.11.2}%
-\contentsline {subsection}{\numberline {11.3}Tail Risk and Drawdown Dynamics}{21}{subsection.11.3}%
-\contentsline {section}{\numberline {12}Synthesis of Problems Identified}{22}{section.12}%
-\contentsline {subsection}{\numberline {12.1}Empirical Shortcomings}{22}{subsection.12.1}%
-\contentsline {subsection}{\numberline {12.2}Assumption Vulnerabilities}{22}{subsection.12.2}%
-\contentsline {subsection}{\numberline {12.3}Validation Gaps}{22}{subsection.12.3}%
-\contentsline {subsection}{\numberline {12.4}Consequences for the Paper's Claim}{22}{subsection.12.4}%
-\contentsline {section}{\numberline {13}Recommendations and Next Steps}{24}{section.13}%
-\contentsline {subsection}{\numberline {13.1}Immediate Actions}{24}{subsection.13.1}%
-\contentsline {subsection}{\numberline {13.2}Medium-Term Research Directions}{24}{subsection.13.2}%
-\contentsline {subsection}{\numberline {13.3}Long-Term Validation Roadmap}{24}{subsection.13.3}%
-\contentsline {section}{\numberline {14}Conclusion}{25}{section.14}%
-\contentsline {section}{\numberline {A}Raw Tables}{26}{appendix.A}%
-\contentsline {subsection}{\numberline {A.1}In-Sample Metrics}{26}{subsection.A.1}%
-\contentsline {subsection}{\numberline {A.2}Out-of-Sample Summary}{26}{subsection.A.2}%
-\contentsline {subsection}{\numberline {A.3}Statistical Tests}{26}{subsection.A.3}%
-\contentsline {subsection}{\numberline {A.4}Turnover Statistics}{27}{subsection.A.4}%
-\contentsline {section}{\numberline {B}Figures}{28}{appendix.B}%
-\contentsline {subsection}{\numberline {B.1}Dendrogram}{28}{subsection.B.1}%
-\contentsline {subsection}{\numberline {B.2}Statistical Test Visualisation}{28}{subsection.B.2}%
-\contentsline {subsection}{\numberline {B.3}Comprehensive Comparison}{28}{subsection.B.3}%
-\contentsline {section}{\numberline {C}Bibliography}{30}{appendix.C}%
+\contentsline {section}{\numberline {10}Comprehensive Monte Carlo Simulation Study}{19}{section.10}%
+\contentsline {subsection}{\numberline {10.1}The Simulation-Reality Paradox}{19}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Simulation Methodology}{19}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Scenario Design}{20}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Monte Carlo Results}{20}{subsection.10.4}%
+\contentsline {subsection}{\numberline {10.5}Critical Findings}{21}{subsection.10.5}%
+\contentsline {subsection}{\numberline {10.6}Explaining the Paradox}{21}{subsection.10.6}%
+\contentsline {subsubsection}{\numberline {10.6.1}Hypothesis 1: Non-Stationarity}{21}{subsubsection.10.6.1}%
+\contentsline {subsubsection}{\numberline {10.6.2}Hypothesis 2: Model Specification Error}{22}{subsubsection.10.6.2}%
+\contentsline {subsubsection}{\numberline {10.6.3}Hypothesis 3: Single-Sector Concentration}{22}{subsubsection.10.6.3}%
+\contentsline {subsubsection}{\numberline {10.6.4}Hypothesis 4: Sample Size Limitations}{22}{subsubsection.10.6.4}%
+\contentsline {subsection}{\numberline {10.7}When HRP Works: Necessary Conditions}{23}{subsection.10.7}%
+\contentsline {subsection}{\numberline {10.8}When HRP Fails: Warning Signs}{23}{subsection.10.8}%
+\contentsline {subsection}{\numberline {10.9}Practical Guidance}{24}{subsection.10.9}%
+\contentsline {subsection}{\numberline {10.10}Comparison with López de Prado's Original Results}{24}{subsection.10.10}%
+\contentsline {subsection}{\numberline {10.11}Simulation Study Conclusion}{25}{subsection.10.11}%
+\contentsline {section}{\numberline {11}Historical Limits of Applicability}{26}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Regime-Specific Weaknesses}{26}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Concentration Risk}{26}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Tail Risk and Drawdown Dynamics}{26}{subsection.11.3}%
+\contentsline {section}{\numberline {12}Synthesis of Problems Identified}{27}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Empirical Shortcomings}{27}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Assumption Vulnerabilities}{27}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Validation Gaps}{27}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Consequences for the Paper's Claim}{27}{subsection.12.4}%
+\contentsline {section}{\numberline {13}Recommendations and Next Steps}{29}{section.13}%
+\contentsline {subsection}{\numberline {13.1}Immediate Actions}{29}{subsection.13.1}%
+\contentsline {subsection}{\numberline {13.2}Medium-Term Research Directions}{29}{subsection.13.2}%
+\contentsline {subsection}{\numberline {13.3}Long-Term Validation Roadmap}{29}{subsection.13.3}%
+\contentsline {section}{\numberline {14}Conclusion}{30}{section.14}%
+\contentsline {section}{\numberline {A}Raw Tables}{31}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}In-Sample Metrics}{31}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Out-of-Sample Summary}{31}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Statistical Tests}{31}{subsection.A.3}%
+\contentsline {subsection}{\numberline {A.4}Turnover Statistics}{32}{subsection.A.4}%
+\contentsline {section}{\numberline {B}Figures}{33}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}Dendrogram}{33}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}Statistical Test Visualisation}{33}{subsection.B.2}%
+\contentsline {subsection}{\numberline {B.3}Comprehensive Comparison}{33}{subsection.B.3}%
+\contentsline {section}{\numberline {C}Bibliography}{35}{appendix.C}%
